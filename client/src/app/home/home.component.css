@@ -1,0 +1,22 @@
+.card-image {
+  height: 120px !important;
+}
+
+.card.small {
+  height: 120px !important;
+  margin-left: 760px;
+  margin-top: 220px;
+}
+
+.card-content {
+  max-height: 100% !important;
+}
+
+.card-content > a {
+  display: flex;
+}
+
+#back-button {
+  margin-top: 15px;
+  margin-left: 15px;
+}

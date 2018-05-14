@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FacebookService, LoginResponse } from 'ngx-facebook';
+import {Component, OnInit} from '@angular/core';
+import {FacebookService, LoginResponse} from 'ngx-facebook';
 
 @Component({
   selector: 'app-home',
@@ -12,17 +12,21 @@ export class HomeComponent implements OnInit {
   }
 
   currentUser;
+  profilePictureUrl;
+  loadedPicture;
 
   getProfile() {
     this.fb.api('/me')
       .then((res: any) => {
         this.currentUser = res;
-        console.log('Got the users profile', res);
+        this.profilePictureUrl = 'https://graph.facebook.com/' + res.id + '/picture?type=large';
       })
       .catch();
   }
 
   ngOnInit() {
+    this.loadedPicture = false;
     this.getProfile();
+    this.loadedPicture = true;
   }
 }
