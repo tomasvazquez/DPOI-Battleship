@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  private socket: io.SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
 
   constructor(private fb: FacebookService, private router: Router) {}
 
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLoadedPicture() {
-    document.getElementById('user-play-card').className = 'card small horizontal';
+    document.getElementById('user-info-col').className = 'col';
     document.getElementById('home-spinner').className = 'preloader-wrapper big hide';
   }
 

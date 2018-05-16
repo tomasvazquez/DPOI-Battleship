@@ -1,7 +1,18 @@
+#home-container {
+  background: url("../../assets/images/background/battleship-background.jpg") no-repeat;
+  height: 100%;
+  background-size: cover;
+}
+
+#user-info-container {
+  width: 520px;
+  display: flex;
+  justify-content: center;
+  padding-top: 250px;
+}
+
 .card.small {
   height: 190px;
-  margin-left: 760px;
-  margin-top: 220px;
 }
 
 .card-content > a {
@@ -14,12 +25,11 @@
   margin-left: 15px;
 }
 
-#home-spinner {
-  margin-left: 930px;
-  margin-top: 220px;
-}
-
 #launch-image {
   width: 100px;
   position: absolute;
+}
+
+.card > .preloader-wrapper {
+  margin: 20px 50px;
 }

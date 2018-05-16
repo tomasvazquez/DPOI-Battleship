@@ -1,5 +1,14 @@
+#login-container {
+  background: url("../../assets/images/background/battleship-background.jpg") no-repeat;
+  height: 100%;
+  background-size: cover;
+}
+
 #login-button {
   background-color: #4267b2;
-  margin-top: 280px;
-  margin-left: 840px;
+}
+
+#login-row {
+  width: 250px;
+  padding-top: 220px;
 }

@@ -1,31 +1,39 @@
-<a id="back-button" class="btn-floating btn-large waves-effect waves-light amber accent-4" href="#">
-  <i class="material-icons">arrow_back</i>
-</a>
+<div id="home-container">
+  <a id="back-button" class="btn-floating btn-large waves-effect waves-light amber accent-4" href="#">
+    <i class="material-icons">arrow_back</i>
+  </a>
 
-<div class="row" >
-  <div class="col">
-    <div id="user-play-card" class="card small horizontal hide">
-      <div class="card-image">
-        <img (load)="onLoadedPicture()" [src]="profilePictureUrl"/>
-      </div>
-      <div class="card-content">
-        <span class="card-title">{{currentUser.name}}</span>
-        <a href="#">
-          <img id="launch-image" src="../../assets/images/home/launch-button-03.png">
-        </a>
+  <div id="user-info-container" class="row">
+    <div id="user-info-col" class="col hide">
+      <div class="card small horizontal">
+        <div class="card-image">
+          <img (load)="onLoadedPicture()" [src]="profilePictureUrl"/>
+        </div>
+        <div class="card-content">
+          <span class="card-title">{{currentUser.name}}</span>
+          <a href="#">
+            <img id="launch-image" src="../../assets/images/home/launch-button-03.png">
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<div id="home-spinner" class="preloader-wrapper big active">
-  <div class="spinner-layer spinner-yellow-only">
-    <div class="circle-clipper left">
-      <div class="circle"></div>
-    </div><div class="gap-patch">
-    <div class="circle"></div>
-  </div><div class="circle-clipper right">
-    <div class="circle"></div>
+    <div class="card">
+      <div id="home-spinner" class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-  </div>
+
 </div>
