@@ -1,22 +1,25 @@
-.card-image {
-  height: 120px !important;
-}
-
 .card.small {
-  height: 120px !important;
+  height: 190px;
   margin-left: 760px;
   margin-top: 220px;
 }
 
-.card-content {
-  max-height: 100% !important;
-}
-
 .card-content > a {
   display: flex;
+  justify-content: center;
 }
 
 #back-button {
   margin-top: 15px;
   margin-left: 15px;
+}
+
+#home-spinner {
+  margin-left: 930px;
+  margin-top: 220px;
+}
+
+#launch-image {
+  width: 100px;
+  position: absolute;
 }

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FacebookService, LoginResponse} from 'ngx-facebook';
+import {_document} from "@angular/platform-browser/src/browser";
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,6 @@ export class HomeComponent implements OnInit {
 
   currentUser;
   profilePictureUrl;
-  loadedPicture;
 
   getProfile() {
     this.fb.api('/me')
@@ -24,9 +24,12 @@ export class HomeComponent implements OnInit {
       .catch();
   }
 
+  onLoadedPicture() {
+    document.getElementById('user-play-card').className = 'card small horizontal';
+    document.getElementById('home-spinner').className = 'preloader-wrapper big hide';
+  }
+
   ngOnInit() {
-    this.loadedPicture = false;
     this.getProfile();
-    this.loadedPicture = true;
   }
 }
