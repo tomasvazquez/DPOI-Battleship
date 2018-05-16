@@ -2,6 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var socketConnections = 0;
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -13,10 +15,15 @@ http.listen(3000, function(){
 io.on('connection', function(socket){
    // console.log('a user connected');
     socket.on('message', function(msg){
-        console.log('user connected: ' + msg);
+        socketConnections++;
+        console.log('user connected: ' + msg+", connections: "+socketConnections);
+        if (socketConnections ==1){
+            socket.emit("waiting");
+        }
     });
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        socketConnections--;
+        console.log('user disconnected, connections: '+socketConnections);
     });
 });
 // io.on('connection', function(socket){

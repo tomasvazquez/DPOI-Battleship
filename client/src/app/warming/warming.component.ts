@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-warming',
@@ -7,8 +8,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WarmingComponent implements OnInit {
 
+  private socket: SocketIOClient.Socket;
+  private status: String;
+
   constructor() {}
 
-  ngOnInit() {}
+  getStatus() {
+    const that = this;
+    this.socket.on('updateStatus', function (msg) {
+      that.status = msg;
+    });
+    return that.status;
+  }
+
+  ngOnInit() {
+    this.status = 'hola';
+    this.socket = io('http://localhost:3000');
+    this.socket.emit('message', 'test');
+    this.socket.emit('getStatus');
+  }
 
 }

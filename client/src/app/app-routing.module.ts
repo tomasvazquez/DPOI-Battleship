@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
+import {WarmingComponent} from './warming/warming.component';
 
 const appRoutes: Routes = [
   {
@@ -11,6 +12,9 @@ const appRoutes: Routes = [
   },
   { path: 'home',
     component: HomeComponent
+  },
+  { path: 'warming',
+    component: WarmingComponent
   }
 ];
 

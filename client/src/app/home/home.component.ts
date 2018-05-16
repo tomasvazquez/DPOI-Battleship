@@ -27,9 +27,9 @@ export class HomeComponent implements OnInit {
   }
 
   getSocket() {
-    this.socket = io('http://localhost:3000');
-    this.socket.emit('message', this.currentUser.name);
-    this.router.navigate(['play']);
+    this.router.navigate(['warming']);
+    // this.socket = io('http://localhost:3000');
+    // this.socket.emit('message', this.currentUser.name);
   }
 
   onLoadedPicture() {
