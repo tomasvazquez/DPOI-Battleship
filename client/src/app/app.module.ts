@@ -1,13 +1,12 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import {FacebookModule, FacebookService, InitParams} from 'ngx-facebook';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FacebookModule} from 'ngx-facebook';
 
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {HomeComponent} from './home/home.component';
 import {AppRoutingModule} from './app-routing.module';
-import { LoginComponent } from './login/login.component';
-import {Observable, Subject} from 'rxjs';
-import { WarmingComponent } from './warming/warming.component';
+import {LoginComponent} from './login/login.component';
+import {WarmingComponent} from './warming/warming.component';
 
 @NgModule({
   declarations: [

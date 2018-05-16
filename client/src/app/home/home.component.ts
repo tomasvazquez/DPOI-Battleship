@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {FacebookService, LoginResponse} from 'ngx-facebook';
-import {_document} from "@angular/platform-browser/src/browser";
+import {FacebookService} from 'ngx-facebook';
 import * as io from 'socket.io-client';
-import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
@@ -11,10 +9,9 @@ import {Router} from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  private socket: SocketIOClient.Socket;
+  private socket: io.SocketIOClient.Socket;
 
-  constructor(private fb: FacebookService, private router: Router) {
-  }
+  constructor(private fb: FacebookService, private router: Router) {}
 
   currentUser;
   profilePictureUrl;
@@ -28,6 +25,7 @@ export class HomeComponent implements OnInit {
       })
       .catch();
   }
+
   getSocket() {
     this.socket = io('http://localhost:3000');
     this.socket.emit('message', this.currentUser.name);

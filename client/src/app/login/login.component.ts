@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private fb: FacebookService, private router: Router) { }
+  constructor(private fb: FacebookService, private router: Router) {}
 
   loginWithFacebook(): void {
 
@@ -23,7 +23,6 @@ export class LoginComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }
