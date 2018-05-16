@@ -22,7 +22,7 @@ export class WarmingComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.status = 'hola';
+    this.status = '';
     this.socket = io('http://localhost:3000');
     this.socket.emit('message', 'test');
     this.socket.emit('getStatus');
