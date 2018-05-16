@@ -17,15 +17,21 @@ io.on('connection', function(socket){
     socket.on('message', function(msg){
         socketConnections++;
         console.log('user connected: ' + msg+", connections: "+socketConnections);
-        if (socketConnections ==1){
-            socket.emit("waiting");
-        }
     });
     socket.on('disconnect', function(){
         socketConnections--;
         console.log('user disconnected, connections: '+socketConnections);
     });
+    socket.on('getStatus', function(){
+
+        socket.emit('updateStatus','waiting');
+
+        console.log('status send');
+    });
 });
+
+
+
 // io.on('connection', function(socket){
 //     socket.on('message', function(msg){
 //         console.log('message: ' + msg);
