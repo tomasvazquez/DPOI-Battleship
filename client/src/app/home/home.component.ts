@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FacebookService, LoginResponse} from 'ngx-facebook';
 import {_document} from "@angular/platform-browser/src/browser";
+import * as io from 'socket.io-client';
+import { Injectable } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -8,12 +11,14 @@ import {_document} from "@angular/platform-browser/src/browser";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  private socket: SocketIOClient.Socket;
 
-  constructor(private fb: FacebookService) {
+  constructor(private fb: FacebookService, private router: Router) {
   }
 
   currentUser;
   profilePictureUrl;
+
 
   getProfile() {
     this.fb.api('/me')
@@ -22,6 +27,11 @@ export class HomeComponent implements OnInit {
         this.profilePictureUrl = 'https://graph.facebook.com/' + res.id + '/picture?type=large';
       })
       .catch();
+  }
+  getSocket() {
+    this.socket = io('http://localhost:3000');
+    this.socket.emit('message', this.currentUser.name);
+    this.router.navigate(['play']);
   }
 
   onLoadedPicture() {
@@ -33,3 +43,4 @@ export class HomeComponent implements OnInit {
     this.getProfile();
   }
 }
+
