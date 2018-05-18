@@ -3,6 +3,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var socketConnections = 0;
+var waitingSocket = null;
+var socketsPlay = new Map();
+var socketId = 0;
+var playId = 0;
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
@@ -15,27 +19,29 @@ http.listen(3000, function(){
 io.on('connection', function(socket){
    // console.log('a user connected');
     socket.on('message', function(msg){
-        socketConnections++;
-        console.log('user connected: ' + msg+", connections: "+socketConnections);
+        if(waitingSocket == null ){
+            waitingSocket = msg;
+        }
+        console.log('user connected: ' +msg+", connections: "+socketConnections);
     });
     socket.on('disconnect', function(){
         socketConnections--;
-        console.log('user disconnected, connections: '+socketConnections);
+        console.log('user disconnected '+ socket.id+', connections: '+socketConnections);
     });
-    socket.on('getStatus', function(){
+    socket.on('getStatus', function(msg){
+        console.log(msg);
+        if (waitingSocket == msg){
+            socket.emit('updateStatus','Waiting for oponent...' );
+        }
+        else {
+            playId++;
+            socketsPlay.set(msg,playId);
+            var otherPlayer = waitingSocket;
+            socketsPlay.set(otherPlayer,playId);
+            waitingSocket = null;
+            socket.emit('updateStatus','Ready to play with '+otherPlayer );
 
-        socket.emit('updateStatus','waiting');
-
-        console.log('status send');
+        }
+        console.log('socket: '+msg+', status: '+waitingSocket);
     });
 });
-
-
-
-// io.on('connection', function(socket){
-//     socket.on('message', function(msg){
-//         console.log('message: ' + msg);
-//     });
-// });
-
-//send message to everyone

@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FacebookService} from 'ngx-facebook';
 import * as io from 'socket.io-client';
 import {Router} from '@angular/router';
+import { UserDataService } from '../user-data.service';
 
 @Component({
   selector: 'app-home',
@@ -11,16 +12,21 @@ import {Router} from '@angular/router';
 export class HomeComponent implements OnInit {
   private socket: SocketIOClient.Socket;
 
-  constructor(private fb: FacebookService, private router: Router) {}
+
+  public nombre: string;
+
+  constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
   currentUser;
+  userName;
   profilePictureUrl;
-
 
   getProfile() {
     this.fb.api('/me')
       .then((res: any) => {
         this.currentUser = res;
+        this.userName = res.name;
+        this.userData.changeUserData(this.userName);
         this.profilePictureUrl = 'https://graph.facebook.com/' + res.id + '/picture?type=large';
       })
       .catch();
@@ -28,9 +34,8 @@ export class HomeComponent implements OnInit {
 
   getSocket() {
     this.router.navigate(['warming']);
-    // this.socket = io('http://localhost:3000');
-    // this.socket.emit('message', this.currentUser.name);
   }
+
 
   onLoadedPicture() {
     document.getElementById('user-info-col').className = 'col';
@@ -39,6 +44,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getProfile();
+
   }
 }
 
