@@ -1,0 +1,85 @@
+<div id="warming-container">
+  <a id="back-button" class="btn-floating btn-large waves-effect waves-light amber accent-4" href="#">
+    <i class="material-icons">arrow_back</i>
+  </a>
+  <div id="waiting-row-container" class="row">
+    <div id="waiting-card" class="card">
+      <span>{{resolveWaitingText()}}</span>
+      <div id="warming-spinner" class="preloader-wrapper small active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a id="play-button" [class]="isGameReady ? 'waves-effect waves-light btn-large' : 'waves-effect waves-light btn-large disabled'"
+       (click)="playGame()">
+      <span>Play</span>
+      <i class="material-icons">send</i>
+    </a>
+  </div>
+  <div id="warming-row-container" class="row">
+    <div class="col s3 pull-s3">
+      <div class="card medium">
+        <div class="card-title available-ships">
+          Ships available
+        </div>
+        <div>Press the 'r' to rotate ships</div>
+        <div> (now: {{isVertical ? 'vertical' : 'horizontal'}})</div>
+        <div class="collection">
+          <div class="ship" *ngFor="let ship of ships" [id]="ship.id"
+               [dndDraggable]="ship.data"
+               [dndEffectAllowed]="ship.effectAllowed"
+               [dndDisableIf]="ship.disabled"
+               (dndStart)="onDragStart($event)"
+               (dndCopied)="onDraggableCopied($event)"
+               (dndLinked)="onDraggableLinked($event)"
+               (dndMoved)="onDraggableMoved($event)"
+               (dndCanceled)="onDragCanceled($event)"
+               (dndEnd)="onDragEnd($event)">
+            {{ship.id}}
+          </div>
+        </div>
+        <a id="reset-board-button" [class]="shipsPlaced === 0 ? 'waves-effect waves-light btn disabled' : 'waves-effect waves-light btn'" (click)="resetBoard()">
+          <i class="material-icons">delete</i>
+          <span>Reset board</span>
+        </a>
+        <a id="random-board-button" class="waves-effect waves-light btn " (click)="randomPlacement()">
+          <i class="material-icons">place</i>
+          <span>Random</span>
+        </a>
+      </div>
+    </div>
+    <div class="col pull-s2">
+      <div id="board-card" class="card">
+        <section>
+          <div class="board" *ngFor="let x of ['-',0,1,2,3,4,5,6,7,8,9]">
+            <div class="cell-id">
+              {{x}}
+            </div>
+            <div *ngFor="let y of [0,1,2,3,4,5,6,7,8,9]">
+              <div *ngIf="x == '-'" class="cell-id">
+                {{y}}
+              </div>
+              <div id="{{x}},{{y}}" *ngIf="x !== '-'" class="cell"
+                   dndDropzone
+                   (dndDragover)="onDragover($event)"
+                   (dndDrop)="onDrop($event)"
+                   [dndDisableIf]="board[y][x].isOccupied"
+              >
+                {{this.board[y][x].ship ? this.board[y][x].ship.id.substr(4,6) : ''}}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FacebookService} from 'ngx-facebook';
 import * as io from 'socket.io-client';
 import {Router} from '@angular/router';
-import { UserDataService } from '../user-data.service';
+import { UserDataService } from '../../user-data.service';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +36,6 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['warming']);
   }
 
-
   onLoadedPicture() {
     document.getElementById('user-info-col').className = 'col';
     document.getElementById('home-spinner').className = 'preloader-wrapper big hide';
@@ -44,7 +43,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getProfile();
-
   }
 }
 

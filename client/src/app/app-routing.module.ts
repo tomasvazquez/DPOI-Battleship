@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
-import {HomeComponent} from './home/home.component';
-import {LoginComponent} from './login/login.component';
-import {WarmingComponent} from './warming/warming.component';
+import {HomeComponent} from './components/home/home.component';
+import {LoginComponent} from './components/login/login.component';
+import {WarmingComponent} from "./components/warming/warming.component";
+import {GameComponent} from "./components/game/game.component";
 
 const appRoutes: Routes = [
   {
@@ -15,6 +16,9 @@ const appRoutes: Routes = [
   },
   { path: 'warming',
     component: WarmingComponent
+  },
+  { path: 'game',
+    component: GameComponent
   }
 ];
 

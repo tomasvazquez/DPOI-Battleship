@@ -1,0 +1,5 @@
+#game-container {
+  background: url("../../../assets/images/background/radar-background.png") no-repeat;
+  height: 100%;
+  background-size: cover;
+}
