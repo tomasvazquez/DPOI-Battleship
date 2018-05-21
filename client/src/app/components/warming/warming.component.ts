@@ -48,7 +48,7 @@ export class WarmingComponent implements OnInit {
     } else {
       if (this.opponentReady) {
         document.getElementById('warming-spinner').className = 'preloader-wrapper small hide';
-        return this.opponent + 'is READY!';
+        return this.opponent + ' is READY!';
       } else {
         return `Playing with ${this.opponent}...`;
       }
@@ -89,6 +89,10 @@ export class WarmingComponent implements OnInit {
     this.isVertical = !this.isVertical;
   }
 
+  resetRotation() {
+    this.isVertical = false;
+  }
+
   resetBoard() {
     this.board = [];
     this.ships = [];
@@ -105,6 +109,7 @@ export class WarmingComponent implements OnInit {
         this.resolveOccupation(parseInt(coordenates[0]), parseInt(coordenates[1]), this.ships[i]);
       }
     }
+    this.resetRotation();
     this.isGameReady = this.checkReadyness();
   }
 
