@@ -1,8 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FacebookService} from 'ngx-facebook';
-import * as io from 'socket.io-client';
 import {Router} from '@angular/router';
-import { UserDataService } from '../../user-data.service';
+import {UserDataService} from '../../user-data.service';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   private socket: SocketIOClient.Socket;
 
 
-  public nombre: string;
+  public name: string;
 
   constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 

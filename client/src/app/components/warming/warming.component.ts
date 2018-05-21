@@ -3,6 +3,8 @@ import {DndDropEvent} from 'ngx-drag-drop';
 import {Cell} from "../../models/cell";
 import {Ship} from "../../models/ship";
 import {Router} from "@angular/router";
+import {FacebookService} from "ngx-facebook";
+import {UserDataService} from "../../user-data.service";
 
 @Component({
   selector: 'app-warming',
@@ -18,12 +20,30 @@ export class WarmingComponent implements OnInit {
     }
   }
 
-  constructor(private router: Router) {}
+  private socket: SocketIOClient.Socket;
+  private status: String;
+
+  constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
   ngOnInit() {
     this.createBoard();
     this.createShips(2, 3, 2);
     this.isGameReady = this.checkReadyness();
+    this.userData.currentMessage.subscribe(message => this.userName = message);
+    this.status = '';
+    this.socket = io('http://localhost:3000');
+    this.socket.emit('message', this.userName);
+    this.socket.emit('getStatus', this.userName);
+  }
+
+  userName;
+
+  getStatus() {
+    const that = this;
+    this.socket.on('updateStatus', function (msg) {
+      that.status = msg;
+    });
+    return that.status;
   }
 
   opponent = undefined;
