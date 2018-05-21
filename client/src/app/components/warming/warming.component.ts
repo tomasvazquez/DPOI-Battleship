@@ -5,6 +5,7 @@ import {Ship} from "../../models/ship";
 import {Router} from "@angular/router";
 import {FacebookService} from "ngx-facebook";
 import {UserDataService} from "../../user-data.service";
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-warming',
@@ -63,12 +64,13 @@ export class WarmingComponent implements OnInit {
   isGameReady = false;
 
   resolveWaitingText() {
+    this.getStatus();
     if (!this.opponent) {
       return 'Waiting for opponent...';
     } else {
       if (this.opponentReady) {
         document.getElementById('warming-spinner').className = 'preloader-wrapper small hide';
-        return this.opponent + ' is READY!';
+        return `${this.opponent} is READY!`;
       } else {
         return `Playing with ${this.opponent}...`;
       }

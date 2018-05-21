@@ -27,6 +27,7 @@
 }
 
 #warming-row-container {
+  padding-top: 70px;
   display: flex;
   justify-content: space-around;
   text-align: center;
@@ -75,6 +76,7 @@ section {
 }
 
 #reset-board-button, #random-board-button {
+  margin-top: 30px;
   display: flex;
   justify-content: space-around;
   margin-left: auto;
@@ -104,4 +106,12 @@ section {
 .ship {
   border: black solid 1px;
   height: 26px;
+}
+
+.col.s3.pull-s3 > .card.medium {
+  height: 440px;
+}
+
+.card.medium > div.collection {
+  margin-top: 20px;
 }
