@@ -29,7 +29,7 @@ export class WarmingComponent implements OnInit {
   ngOnInit() {
     this.createBoard();
     this.createShips(2, 3, 2);
-    this.isGameReady = this.checkReadyness();
+    this.isGameReady = false;
     this.userData.currentMessage.subscribe(message => this.userName = message);
     this.status = '';
     this.socket = io('http://localhost:3000');
@@ -72,13 +72,25 @@ export class WarmingComponent implements OnInit {
         document.getElementById('warming-spinner').className = 'preloader-wrapper small hide';
         return `${this.opponent} is READY!`;
       } else {
-        return `Playing with ${this.opponent}...`;
+        if (this.isGameReady) {
+          return `Waiting for ${this.opponent}...`;
+        } else {
+          return `Playing with ${this.opponent}...`;
+        }
       }
     }
   }
 
   playGame() {
-    this.router.navigate(['game']);
+    this.isGameReady = this.checkReadyness();
+    document.getElementById('play-button').className = 'waves-effect waves-light btn-large disabled';
+    document.getElementById('reset-board-button').className = 'waves-effect waves-light btn disabled';
+    document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
+    this.socket.emit('setReady', this.userName);
+
+    if (this.opponentReady) {
+      this.router.navigate(['game']);
+    }
   }
 
   createShips(sized2, sized3, sized4) {

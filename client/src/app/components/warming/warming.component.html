@@ -76,9 +76,9 @@
         </div>
       </div>
     </div>
-    <a id="play-button" [class]="isGameReady ? 'waves-effect waves-light btn-large' : 'waves-effect waves-light btn-large disabled'"
+    <a id="play-button" [class]="checkReadyness() ? 'waves-effect waves-light btn-large' : 'waves-effect waves-light btn-large disabled'"
        (click)="playGame()">
-      <span>Play</span>
+      <span>Ready!</span>
       <i class="material-icons">send</i>
     </a>
   </div>
