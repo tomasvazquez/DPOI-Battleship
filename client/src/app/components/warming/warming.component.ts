@@ -35,20 +35,27 @@ export class WarmingComponent implements OnInit {
     this.socket = io('http://localhost:3000');
     this.socket.emit('message', this.userName);
     this.socket.emit('getStatus', this.userName);
+    this.getStatus();
   }
 
   userName;
+  opponent = undefined;
+  opponentReady = false;
+  isGameReady = false;
 
   getStatus() {
     const that = this;
     this.socket.on('updateStatus', function (msg) {
-      that.status = msg;
+      that.opponent = msg;
     });
-    return that.status;
+    this.socket.on('updateOponentReady',function (msg) {
+      that.opponentReady = msg;
+      that.isGameReady = that.checkReadyness();
+      if (that.opponentReady && that.isGameReady){
+        that.router.navigate(['game']);
+      }
+    })
   }
-
-  opponent = undefined;
-  opponentReady = false;
 
   board = [];
   ships = [];
@@ -61,10 +68,7 @@ export class WarmingComponent implements OnInit {
 
   shipsPlaced = 0;
 
-  isGameReady = false;
-
   resolveWaitingText() {
-    this.getStatus();
     if (!this.opponent) {
       return 'Waiting for opponent...';
     } else {
@@ -88,7 +92,7 @@ export class WarmingComponent implements OnInit {
     document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
     this.socket.emit('setReady', this.userName);
 
-    if (this.opponentReady) {
+    if (this.opponentReady){
       this.router.navigate(['game']);
     }
   }
