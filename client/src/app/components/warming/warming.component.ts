@@ -50,11 +50,16 @@ export class WarmingComponent implements OnInit {
     });
     this.socket.on('updateOponentReady',function (msg) {
       that.opponentReady = msg;
-      that.isGameReady = that.checkReadyness();
       if (that.opponentReady && that.isGameReady){
         that.router.navigate(['game']);
       }
-    })
+    });
+    this.socket.on('opponentDisconnect', function (msg) {
+      alert(msg+" leave the game");
+      that.opponent = undefined;
+      that.opponentReady = false;
+      that.isGameReady = false;
+    });
   }
 
   board = [];

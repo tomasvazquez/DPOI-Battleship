@@ -28,6 +28,14 @@ function findObjectByOtherStatus(array, status, otherName) {
     return null;
 }
 
+function findObjectById(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i].id === value) {
+            return array[i];
+        }
+    }
+    return null;
+}
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -37,7 +45,6 @@ http.listen(3000, function(){
 });
 
 io.on('connection', function(socket){
-   // console.log('a user connected');
     socket.on('message', function(msg){
         if(waitingWebSocket == null ){
            waitingWebSocket = new mySocket.MySocket(socket.id,msg);
@@ -47,6 +54,25 @@ io.on('connection', function(socket){
     });
     socket.on('disconnect', function(){
         socketConnections--;
+        var ws = findObjectById(socketsList,socket.id);
+        if(waitingWebSocket == null) {
+            var otherSocket = findObjectByOtherStatus(socketsList, ws.status, ws.name);
+            waitingWebSocket = otherSocket;
+            var index = socketsList.indexOf(ws);
+            socketsList.splice(index, 1);
+            socket.to(otherSocket.id).emit('opponentDisconnect', ws.name);
+        }else if (waitingWebSocket.id == socket.id){
+            waitingWebSocket == null;
+            console.log('ws deleted');
+        }else{
+            waitingWebSocket.status = ws.status;
+            var index = socketsList.indexOf(ws);
+            socketsList.splice(index,1);
+            socketsList.push(waitingWebSocket);
+            var json = {'oldSocket' : ws.name, 'newSocket' : waitingWebSocket.name};
+            waitingWebSocket == null;
+            socket.to(otherSocket.id).emit('opponentChange',json);
+        }
         console.log('user disconnected '+ socket.id+', connections: '+socketConnections);
     });
     socket.on('getStatus', function(msg){
