@@ -29,7 +29,8 @@ export class WarmingComponent implements OnInit {
   ngOnInit() {
     this.createBoard();
     this.createShips(2, 3, 2);
-    this.isGameReady = false;
+    this.isGameSet = false;
+    this.isButtonClicked = false;
     this.userData.currentMessage.subscribe(message => this.userName = message);
     this.status = '';
     this.socket = io('http://localhost:3000');
@@ -41,7 +42,8 @@ export class WarmingComponent implements OnInit {
   userName;
   opponent = undefined;
   opponentReady = false;
-  isGameReady = false;
+  isGameSet = false;
+  isButtonClicked = false;
 
   getStatus() {
     const that = this;
@@ -50,7 +52,8 @@ export class WarmingComponent implements OnInit {
     });
     this.socket.on('updateOponentReady',function (msg) {
       that.opponentReady = msg;
-      if (that.opponentReady && that.isGameReady){
+      that.isGameSet = that.checkReadyness();
+      if (that.isGameSet && that.opponentReady && that.isButtonClicked){
         that.router.navigate(['game']);
       }
     });
@@ -58,7 +61,7 @@ export class WarmingComponent implements OnInit {
       alert(msg+" leave the game");
       that.opponent = undefined;
       that.opponentReady = false;
-      that.isGameReady = false;
+      that.isGameSet = false;
     });
   }
 
@@ -81,7 +84,7 @@ export class WarmingComponent implements OnInit {
         document.getElementById('warming-spinner').className = 'preloader-wrapper small hide';
         return `${this.opponent} is READY!`;
       } else {
-        if (this.isGameReady) {
+        if (this.isGameSet) {
           return `Waiting for ${this.opponent}...`;
         } else {
           return `Playing with ${this.opponent}...`;
@@ -91,13 +94,14 @@ export class WarmingComponent implements OnInit {
   }
 
   playGame() {
-    this.isGameReady = this.checkReadyness();
+    this.isButtonClicked = true;
+    this.isGameSet = this.checkReadyness();
     document.getElementById('play-button').className = 'waves-effect waves-light btn-large disabled';
     document.getElementById('reset-board-button').className = 'waves-effect waves-light btn disabled';
     document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
     this.socket.emit('setReady', this.userName);
 
-    if (this.opponentReady){
+    if (this.isGameSet && this.opponentReady){
       this.router.navigate(['game']);
     }
   }
@@ -153,7 +157,7 @@ export class WarmingComponent implements OnInit {
       }
     }
     this.resetRotation();
-    this.isGameReady = this.checkReadyness();
+    this.isGameSet = this.checkReadyness();
   }
 
   private findRandomAvailablePlace(coordenates, ship) {
@@ -214,7 +218,7 @@ export class WarmingComponent implements OnInit {
     let target = event.event.currentTarget as HTMLElement;
     const coordenates = target.id.split(',');
     this.resolveOccupation(parseInt(coordenates[0]), parseInt(coordenates[1]), this.draggingShip);
-    this.isGameReady = this.checkReadyness();
+    this.isGameSet = this.checkReadyness();
     console.log("dropped", JSON.stringify(event, null, 2));
   }
 
