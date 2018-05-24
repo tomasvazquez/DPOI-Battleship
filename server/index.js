@@ -12,7 +12,7 @@ var waitingWebSocket = null;
 
 function findObjectByName(array, value) {
     for (var i = 0; i < array.length; i++) {
-        if (array[i].name === value) {
+        if (array[i].user.name === value) {
             return array[i];
         }
     }
@@ -21,7 +21,7 @@ function findObjectByName(array, value) {
 
 function findObjectByOtherStatus(array, status, otherName) {
     for (var i = 0; i < array.length; i++) {
-        if (array[i].status === status && array[i].name != otherName) {
+        if (array[i].status === status && array[i].user.name != otherName) {
             return array[i];
         }
     }
@@ -45,22 +45,22 @@ http.listen(3000, function(){
 });
 
 io.on('connection', function(socket){
-    socket.on('message', function(msg){
+    socket.on('message', function(json){
         if(waitingWebSocket == null ){
-           waitingWebSocket = new mySocket.MySocket(socket.id,msg);
+           waitingWebSocket = new mySocket.MySocket(socket.id,json);
         }
         socketConnections++;
-        console.log('user connected: ' +waitingWebSocket.id+", connections: "+socketConnections);
+        console.log('user connected: ' +socket.id+", connections: "+socketConnections);
     });
     socket.on('disconnect', function(){
         socketConnections--;
         var ws = findObjectById(socketsList,socket.id);
         if(waitingWebSocket == null) {
-            var otherSocket = findObjectByOtherStatus(socketsList, ws.status, ws.name);
+            var otherSocket = findObjectByOtherStatus(socketsList, ws.status, ws.user.name);
             waitingWebSocket = otherSocket;
             var index = socketsList.indexOf(ws);
             socketsList.splice(index, 1);
-            socket.to(otherSocket.id).emit('opponentDisconnect', ws.name);
+            socket.to(otherSocket.id).emit('opponentDisconnect', ws.user.name);
         }else if (waitingWebSocket.id == socket.id){
             waitingWebSocket == null;
             console.log('ws deleted');
@@ -69,36 +69,35 @@ io.on('connection', function(socket){
             var index = socketsList.indexOf(ws);
             socketsList.splice(index,1);
             socketsList.push(waitingWebSocket);
-            var json = {'oldSocket' : ws.name, 'newSocket' : waitingWebSocket.name};
+            var json = {'oldSocket' : ws.user.name, 'newSocket' : waitingWebSocket.user.name};
             waitingWebSocket == null;
             socket.to(otherSocket.id).emit('opponentChange',json);
         }
         console.log('user disconnected '+ socket.id+', connections: '+socketConnections);
     });
-    socket.on('getStatus', function(msg){
-        console.log(msg);
-        if (waitingWebSocket.name == msg){
+    socket.on('getStatus', function(json){
+        if (waitingWebSocket.user.name == json.name){
             socket.emit('updateStatus',undefined );
-            console.log('socket: '+msg+', status: waiting');
+            console.log('socket: '+json.name+', status: waiting');
         }
         else {
             playId++;
-            var ws = new mySocket.MySocket(socket.id,msg);
+            var ws = new mySocket.MySocket(socket.id,json);
             waitingWebSocket.status = playId;
             ws.status = playId;
             socketsList.push(ws);
             socketsList.push(waitingWebSocket);
-            socket.emit('updateStatus',waitingWebSocket.name );
-            socket.to(waitingWebSocket.id).emit('updateStatus', msg);
-            console.log('socket: '+msg+', Ready to play with '+waitingWebSocket.name );
+            socket.emit('updateStatus',waitingWebSocket.user );
+            socket.to(waitingWebSocket.id).emit('updateStatus', json);
+            console.log('socket: '+json.name+', Ready to play with '+waitingWebSocket.user.name );
             waitingWebSocket = null;
         }
 
     });
     socket.on('setReady',function (msg) {
         var thisSocket = findObjectByName(socketsList,msg);
-        var otherSocket = findObjectByOtherStatus(socketsList,thisSocket.status,thisSocket.name);
-        console.log('socket ready: '+thisSocket.name+' other socket: '+otherSocket.name);
+        var otherSocket = findObjectByOtherStatus(socketsList,thisSocket.status,thisSocket.user.name);
+        console.log('socket ready: '+thisSocket.user.name+' other socket: '+otherSocket.user.name);
         socket.to(otherSocket.id).emit('updateOponentReady', true);
     });
 

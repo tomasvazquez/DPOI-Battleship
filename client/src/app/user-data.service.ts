@@ -6,12 +6,33 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class UserDataService {
 
-  private userData = new BehaviorSubject<string>('empty');
-  currentMessage = this.userData.asObservable();
+  private user = new BehaviorSubject('');
+  private opponentData: BehaviorSubject<any> = new BehaviorSubject([]);
+  private board = new BehaviorSubject('');
 
   constructor() { }
 
-  changeUserData(message: string) {
-    this.userData.next(message);
+  getUser(){
+    return this.user;
+  }
+
+  setUser(json) {
+    this.user.next(json);
+  }
+
+  getOpponentData(){
+    return this.opponentData;
+  }
+
+  setOpponentData(json){
+    this.opponentData.next(json);
+  }
+
+  getBoard(){
+    return this.board;
+  }
+
+  setBoard(json){
+    this.board.next(json);
   }
 }

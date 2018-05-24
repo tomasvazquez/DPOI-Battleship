@@ -26,8 +26,8 @@ export class HomeComponent implements OnInit {
       .then((res: any) => {
         this.currentUser = res;
         this.userName = res.name;
-        this.userData.changeUserData(this.userName);
         this.profilePictureUrl = 'https://graph.facebook.com/' + res.id + '/picture?type=large';
+        this.userData.setUser({"name":this.userName, "picUrl":this.profilePictureUrl});
       })
       .catch();
   }

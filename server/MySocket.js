@@ -1,6 +1,6 @@
-exports.MySocket = function (id, name) {
+exports.MySocket = function (id, user) {
     this.id = id;
-    this.name = name;
+    this.user = user;
     this.status = undefined;
     this.board = undefined;
 };

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Cell} from "../../models/cell";
 import {FacebookService} from "ngx-facebook";
+import {UserDataService} from "../../user-data.service";
 
 @Component({
   selector: 'app-game',
@@ -18,7 +19,7 @@ export class GameComponent implements OnInit {
   opponentProfilePictureUrl;
   myTurn = true;
 
-  constructor(private fb: FacebookService) { }
+  constructor(private userData: UserDataService) { }
 
   ngOnInit() {
     this.createBoard();

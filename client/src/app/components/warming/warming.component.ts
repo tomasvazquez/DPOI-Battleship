@@ -23,7 +23,7 @@ export class WarmingComponent implements OnInit {
 
   private socket: SocketIOClient.Socket;
   private status: String;
-  userName;
+  user;
   opponent = undefined;
   opponentReady = false;
   isGameSet = false;
@@ -44,18 +44,25 @@ export class WarmingComponent implements OnInit {
     this.createShips(2, 3, 2);
     this.isGameSet = false;
     this.isButtonClicked = false;
-    this.userData.currentMessage.subscribe(message => this.userName = message);
+    this.getUserData();
     this.status = '';
     this.socket = io('http://localhost:3000');
-    this.socket.emit('message', this.userName);
-    this.socket.emit('getStatus', this.userName);
+    this.socket.emit('message', this.user);
+    this.socket.emit('getStatus', this.user);
     this.getStatus();
+  }
+
+  getUserData() {
+    const that = this;
+    that.userData.getUser()
+      .subscribe(json => that.user = json);
   }
 
   getStatus() {
     const that = this;
     this.socket.on('updateStatus', function (msg) {
       that.opponent = msg;
+      that.userData.setOpponentData(that.opponent);
     });
     this.socket.on('updateOponentReady',function (msg) {
       that.opponentReady = msg;
@@ -78,12 +85,12 @@ export class WarmingComponent implements OnInit {
     } else {
       if (this.opponentReady) {
         document.getElementById('warming-spinner').className = 'preloader-wrapper small hide';
-        return `${this.opponent} is READY!`;
+        return `${this.opponent.name} is READY!`;
       } else {
         if (this.isGameSet) {
-          return `Waiting for ${this.opponent}...`;
+          return `Waiting for ${this.opponent.name}...`;
         } else {
-          return `Playing with ${this.opponent}...`;
+          return `Playing with ${this.opponent.name}...`;
         }
       }
     }
@@ -95,9 +102,10 @@ export class WarmingComponent implements OnInit {
     document.getElementById('play-button').className = 'waves-effect waves-light btn-large disabled';
     document.getElementById('reset-board-button').className = 'waves-effect waves-light btn disabled';
     document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
-    this.socket.emit('setReady', this.userName);
+    this.socket.emit('setReady', this.user.name);
 
     if (this.isGameSet && this.opponentReady){
+      this.userData.setBoard(this.board);
       this.router.navigate(['game']);
     }
   }
