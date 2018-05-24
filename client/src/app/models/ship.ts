@@ -8,8 +8,9 @@ export class Ship {
   effectAllowed: string;
   disabled: boolean;
   cells: Array<Cell>;
+  color: string;
 
-  constructor(id: number, size: number) {
+  constructor(id: number, size: number, color: string) {
     this.id = `ship${size}-${id}`;
     this.size = size;
     this.isVertical = false;
@@ -17,6 +18,7 @@ export class Ship {
     this.effectAllowed = "move";
     this.disabled = false;
     this.cells = [];
+    this.color = color;
   }
 
   public rotate() {

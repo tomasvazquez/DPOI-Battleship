@@ -1,2 +1,106 @@
 <div id="game-container">
+  <a id="back-button" class="btn-floating btn-large waves-effect waves-light amber accent-4" href="#">
+    <i class="material-icons">arrow_back</i>
+  </a>
+
+  <div id="turns-row-container" class="row">
+    <div id="user-info-col" class="col hide">
+      <div id="username-card" class="card small horizontal">
+        <div class="card-image">
+          <!--<img (load)="onLoadedPicture()" [src]="userProfilePictureUrl"/>-->
+          <img (load)="onLoadedPicture()" [src]="userProfilePictureUrl"/>
+        </div>
+        <div class="card-content">
+          <span class="card-title">{{userName ? userName : ''}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div id="username-spinner" class="preloader-wrapper medium active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="opponent-info-col" class="col hide">
+      <div id="opponent-card" class="card small horizontal">
+        <div class="card-image">
+          <!--<img (load)="onLoadedPicture()" [src]="opponentProfilePictureUrl"/>-->
+          <img (load)="onLoadedPicture()" [src]="opponentProfilePictureUrl"/>
+        </div>
+        <div class="card-content">
+          <span class="card-title">{{opponentName ? opponentName : ''}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div id="opponent-spinner" class="preloader-wrapper medium active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="boards-row-container" class="row">
+    {{checkIfTurn()}}
+    <div class="col offset-s1">
+      <div class="board-card card">
+        <section id="user-board">
+          <div class="board" *ngFor="let x1 of ['-',0,1,2,3,4,5,6,7,8,9]">
+            <div class="cell-id">
+              {{x1}}
+            </div>
+            <div *ngFor="let y1 of [0,1,2,3,4,5,6,7,8,9]">
+              <div *ngIf="x1 == '-'" class="cell-id">
+                {{y1}}
+              </div>
+              <div *ngIf="x1 !== '-'" class="cell">
+                {{this.userBoard[y1][x1].ship ? this.userBoard[y1][x1].ship.id.substr(4,6) : ''}}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="col offset-s1">
+      <div class="board-card card">
+        <section id="opponent-board" >
+          <div class="board" *ngFor="let x2 of ['-',0,1,2,3,4,5,6,7,8,9]">
+            <div class="cell-id">
+              {{x2}}
+            </div>
+            <div *ngFor="let y2 of [0,1,2,3,4,5,6,7,8,9]">
+              <div *ngIf="x2 == '-'" class="cell-id">
+                {{y2}}
+              </div>
+              <a ngClass="{{myTurn ? 'clickable-cell' : 'clickable-cell disabled'}}" (click)="shoot(x2,y2)">
+                <div id="{{x2}},{{y2}}" *ngIf="x2 !== '-'" class="cell">
+                  {{this.opponentBoard[y2][x2].ship ? this.opponentBoard[y2][x2].ship.id.substr(4,6) : ''}}
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
 </div>

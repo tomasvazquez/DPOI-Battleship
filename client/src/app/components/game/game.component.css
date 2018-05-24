@@ -3,3 +3,124 @@
   height: 100%;
   background-size: cover;
 }
+
+#user-info-container {
+  width: 520px;
+  display: flex;
+  justify-content: center;
+  padding-top: 250px;
+}
+
+.card.small.horizontal > .card-content {
+  max-height: none !important;
+  display: flex;
+  align-items: center;
+}
+
+.card.small.horizontal > .card-content > .card-title {
+  margin: 0;
+}
+
+.card > .preloader-wrapper {
+  margin: 20px 50px;
+}
+
+#back-button {
+  margin-top: 15px;
+  margin-left: 15px;
+  position: absolute;
+}
+
+#turns-row-container {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+  align-items: center;
+}
+
+#username-card, #opponent-card {
+  display: flex;
+  align-items: center;
+  height: 100px;
+  margin: 0;
+}
+
+#boards-row-container {
+  padding-top: 20px;
+  display: flex;
+  text-align: center;
+}
+
+section {
+  display: flex;
+}
+
+.cell {
+  border: black solid 1px;
+  width: 40px;
+  height: 40px;
+}
+
+.cell-id {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: black solid 1px;
+  background-color: #ac0000;
+  color: #FFFFFF;
+  width: 40px;
+  height: 40px;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.board-card {
+  /*background-color: transparent;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dndDropzoneDisabled {
+  background-color: rgba(0, 0, 199, 0.78);
+}
+
+
+#play-button > span {
+  margin-right: 10px;
+}
+
+#random-board-button {
+  margin-top: 10px;
+}
+
+.card-title.available-ships {
+  padding-top: 10px;
+}
+
+.ship {
+  border: black solid 1px;
+  height: 26px;
+}
+
+.col.s3.pull-s3 > .card.medium {
+  height: 440px;
+}
+
+.card.medium > div.collection {
+  margin-top: 20px;
+}
+
+.clickable-cell {
+  cursor: pointer;
+}
+
+.clickable-cell.disabled {
+  cursor: default;
+  pointer-events: none;
+}

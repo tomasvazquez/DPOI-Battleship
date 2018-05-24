@@ -68,10 +68,6 @@ section {
   align-items: center;
 }
 
-.dndDropzoneDisabled {
-  background-color: rgba(0, 0, 199, 0.78);
-}
-
 .dndDraggableDisabled {
   background-color: rgba(163, 165, 171, 0.78);
 }

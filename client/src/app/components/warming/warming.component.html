@@ -21,7 +21,7 @@
                (dndMoved)="onDraggableMoved($event)"
                (dndCanceled)="onDragCanceled($event)"
                (dndEnd)="onDragEnd($event)">
-            {{ship.id}}
+            {{ship.color.toUpperCase()}} SHIP ({{ship.size}} blocks)
           </div>
         </div>
         <a id="reset-board-button" [class]="shipsPlaced === 0 ? 'waves-effect waves-light btn disabled' : 'waves-effect waves-light btn'" (click)="resetBoard()">
@@ -50,9 +50,7 @@
                    (dndDragover)="onDragover($event)"
                    (dndDrop)="onDrop($event)"
                    [dndDisableIf]="board[y][x].isOccupied"
-              >
-                {{this.board[y][x].ship ? this.board[y][x].ship.id.substr(4,6) : ''}}
-              </div>
+              ></div>
             </div>
           </div>
         </section>

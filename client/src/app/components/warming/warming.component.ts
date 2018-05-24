@@ -23,10 +23,23 @@ export class WarmingComponent implements OnInit {
 
   private socket: SocketIOClient.Socket;
   private status: String;
+  userName;
+  opponent = undefined;
+  opponentReady = false;
+  isGameSet = false;
+  isButtonClicked = false;
+  board = [];
+  ships = [];
+  boardSize = 10;
+  isVertical = false;
+  draggingShip = undefined;
+  shipsPlaced = 0;
+  shipColors = [];
 
   constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
   ngOnInit() {
+    this.shipColors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'black'];
     this.createBoard();
     this.createShips(2, 3, 2);
     this.isGameSet = false;
@@ -38,12 +51,6 @@ export class WarmingComponent implements OnInit {
     this.socket.emit('getStatus', this.userName);
     this.getStatus();
   }
-
-  userName;
-  opponent = undefined;
-  opponentReady = false;
-  isGameSet = false;
-  isButtonClicked = false;
 
   getStatus() {
     const that = this;
@@ -64,17 +71,6 @@ export class WarmingComponent implements OnInit {
       that.isGameSet = false;
     });
   }
-
-  board = [];
-  ships = [];
-
-  boardSize = 10;
-
-  isVertical = false;
-
-  draggingShip = undefined;
-
-  shipsPlaced = 0;
 
   resolveWaitingText() {
     if (!this.opponent) {
@@ -108,13 +104,13 @@ export class WarmingComponent implements OnInit {
 
   createShips(sized2, sized3, sized4) {
     for (let i = 0; i < sized2; i++) {
-      this.ships.push(new Ship(i, 2));
+      this.ships.push(new Ship(i, 2, this.shipColors.pop()));
     }
     for (let j = 0; j < sized3; j++) {
-      this.ships.push(new Ship(j, 3));
+      this.ships.push(new Ship(j, 3, this.shipColors.pop()));
     }
     for (let k = 0; k < sized4; k++) {
-      this.ships.push(new Ship(k, 4));
+      this.ships.push(new Ship(k, 4, this.shipColors.pop()));
     }
   }
 
@@ -123,7 +119,8 @@ export class WarmingComponent implements OnInit {
     for (let i = 0; i < boardSize; i++) {
       const cellRow: Array<Cell> = [];
       for (let j = 0; j < boardSize; j++) {
-        cellRow.push(new Cell(j, i))
+        cellRow.push(new Cell(j, i));
+        if (document.getElementById(`${j},${i}`)) document.getElementById(`${j},${i}`).style.backgroundColor = 'white';
       }
       this.board.push(cellRow);
     }
@@ -265,6 +262,7 @@ export class WarmingComponent implements OnInit {
       this.board[y + i][x].isOccupied = true;
       this.board[y + i][x].ship = ship;
       ship.cells.push(this.board[y + i][x]);
+      document.getElementById(`${x},${y+i}`).style.backgroundColor = ship.color;
     }
     ship.disabled = true;
     this.shipsPlaced++;
@@ -275,6 +273,7 @@ export class WarmingComponent implements OnInit {
       this.board[y][x + i].isOccupied = true;
       this.board[y][x + i].ship = ship;
       ship.cells.push(this.board[y][x + i]);
+      document.getElementById(`${x+i},${y}`).style.backgroundColor = ship.color;
     }
     ship.disabled = true;
     this.shipsPlaced++;
