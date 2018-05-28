@@ -8,10 +8,10 @@
       <div id="username-card" class="card small horizontal">
         <div class="card-image">
           <!--<img (load)="onLoadedPicture()" [src]="userProfilePictureUrl"/>-->
-          <img (load)="onLoadedPicture()" [src]="userProfilePictureUrl"/>
+          <img (load)="onLoadedPicture()" [src]="user.picUrl"/>
         </div>
         <div class="card-content">
-          <span class="card-title">{{userName ? userName : ''}}</span>
+          <span class="card-title">{{user.name ? user.name : ''}}</span>
         </div>
       </div>
     </div>
@@ -35,10 +35,10 @@
       <div id="opponent-card" class="card small horizontal">
         <div class="card-image">
           <!--<img (load)="onLoadedPicture()" [src]="opponentProfilePictureUrl"/>-->
-          <img (load)="onLoadedPicture()" [src]="opponentProfilePictureUrl"/>
+          <img (load)="onLoadedPicture()" [src]="opponent.picUrl"/>
         </div>
         <div class="card-content">
-          <span class="card-title">{{opponentName ? opponentName : ''}}</span>
+          <span class="card-title">{{opponent.name ? opponent.name : ''}}</span>
         </div>
       </div>
     </div>

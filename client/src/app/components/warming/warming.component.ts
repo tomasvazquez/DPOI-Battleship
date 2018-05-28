@@ -68,6 +68,7 @@ export class WarmingComponent implements OnInit {
       that.opponentReady = msg;
       that.isGameSet = that.checkReadyness();
       if (that.isGameSet && that.opponentReady && that.isButtonClicked){
+        that.userData.setBoard(that.board);
         that.router.navigate(['game']);
       }
     });

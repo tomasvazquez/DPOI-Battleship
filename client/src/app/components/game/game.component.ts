@@ -13,27 +13,32 @@ export class GameComponent implements OnInit {
   userBoard = [];
   opponentBoard = [];
   boardSize = 10;
-  userName;
-  opponentName;
-  userProfilePictureUrl;
-  opponentProfilePictureUrl;
+  user;
+  opponent;
   myTurn = true;
 
   constructor(private userData: UserDataService) { }
 
   ngOnInit() {
     this.createBoard();
-    this.getProfile();
+    this.getData();
   }
 
-  getProfile() {
-    this.userName = 'Nacho Vazquez';
-    this.userProfilePictureUrl = 'https://graph.facebook.com/10217246688904256/picture?type=large';
+  getData() {
+    this.userData.getUser()
+      .subscribe(json => this.user = json);
+    this.userData.getOpponentData()
+      .subscribe(json => this.opponent = json);
+    this.userData.getBoard()
+      .subscribe(json => this.userBoard = json);
+    console.log(this.userBoard);
   }
 
   onLoadedPicture() {
     document.getElementById('user-info-col').className = 'col';
+    document.getElementById('opponent-info-col').className = 'col';
     document.getElementById('username-spinner').className = 'preloader-wrapper big hide';
+    document.getElementById('opponent-spinner').className = 'preloader-wrapper big hide';
   }
 
   createBoard() {

@@ -8,7 +8,7 @@ export class UserDataService {
 
   private user = new BehaviorSubject('');
   private opponentData: BehaviorSubject<any> = new BehaviorSubject([]);
-  private board = new BehaviorSubject('');
+  private board: BehaviorSubject<any> = new BehaviorSubject([]);
 
   constructor() { }
 
