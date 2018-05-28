@@ -124,3 +124,31 @@ section {
   cursor: default;
   pointer-events: none;
 }
+
+.black-ship {
+  background-color: black;
+}
+
+.purple-ship {
+  background-color: purple;
+}
+
+.blue-ship {
+  background-color: blue;
+}
+
+.green-ship {
+  background-color: green;
+}
+
+.yellow-ship {
+  background-color: yellow;
+}
+
+.orange-ship {
+  background-color: orange;
+}
+
+.red-ship {
+  background-color: red;
+}

@@ -73,8 +73,7 @@
               <div *ngIf="x1 == '-'" class="cell-id">
                 {{y1}}
               </div>
-              <div *ngIf="x1 !== '-'" class="cell">
-                {{this.userBoard[y1][x1].ship ? this.userBoard[y1][x1].ship.id.substr(4,6) : ''}}
+              <div *ngIf="x1 !== '-'" [class]="this.userBoard[y1][x1].ship ? this.userBoard[y1][x1].ship.color + '-ship cell' : 'cell'">
               </div>
             </div>
           </div>
