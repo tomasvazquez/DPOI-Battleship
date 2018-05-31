@@ -2,10 +2,12 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mySocket = require('./MySocket.js');
+var game = require('./Game.js');
 
 var socketConnections = 0;
-var socketsPlay = new Map();
+var gamesList = [];
 var playId = 0;
+var gameId = 0;
 var socketsList = [];
 
 var waitingWebSocket = null;
@@ -36,6 +38,32 @@ function findObjectById(array, value) {
     }
     return null;
 }
+
+function findSocketById(array, value){
+    if (array.ws1.id === value){
+        return array.ws1;
+    }else{
+        return array.ws2;
+    }
+}
+
+function findOtherSocket(array, value){
+    if (array.ws1.id === value){
+        return array.ws2;
+    }else{
+        return array.ws1;
+    }
+}
+
+function updateGame(game,list) {
+    var oldGame = findObjectById(list,game.id);
+    var index = list.indexOf(oldGame);
+    if (index > -1) {
+        list.splice(index, 1);
+    }
+    list.push(game);
+}
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -83,10 +111,16 @@ io.on('connection', function(socket){
         else {
             playId++;
             var ws = new mySocket.MySocket(socket.id,json);
-            waitingWebSocket.status = playId;
-            ws.status = playId;
-            socketsList.push(ws);
-            socketsList.push(waitingWebSocket);
+            waitingWebSocket.playId = playId;
+            ws.playId = playId;
+            waitingWebSocket.status = 'warming';
+            ws.status = 'warming';
+            json.playId = playId;
+            waitingWebSocket.user.playId = playId;
+            // socketsList.push(ws);
+            // socketsList.push(waitingWebSocket);
+            var newGame = new game.Game(playId,ws,waitingWebSocket,'warming');
+            gamesList.push(newGame);
             socket.emit('updateStatus',waitingWebSocket.user );
             socket.to(waitingWebSocket.id).emit('updateStatus', json);
             console.log('socket: '+json.name+', Ready to play with '+waitingWebSocket.user.name );
@@ -94,11 +128,23 @@ io.on('connection', function(socket){
         }
 
     });
-    socket.on('setReady',function (msg) {
-        var thisSocket = findObjectByName(socketsList,msg);
-        var otherSocket = findObjectByOtherStatus(socketsList,thisSocket.status,thisSocket.user.name);
+    socket.on('setReady',function (json) {
+        var thisGame = findObjectById(gamesList, json.playId);
+        var thisSocket = findSocketById(thisGame,socket.id);
+        var otherSocket = findOtherSocket(thisGame,socket.id);
+        thisSocket.board = json.board;
+        thisSocket.status = 'ready';
+        thisGame.ws1 = thisSocket;
+        thisGame.ws2 = otherSocket;
+        if (thisSocket.status === 'ready' && otherSocket.status === 'ready'){
+            thisGame.status = 'ready';
+            console.log('game is ready to play');
+            console.log(thisSocket.user.name+' board: '+thisSocket.board);
+            console.log(otherSocket.user.name+' board: '+otherSocket.board);
+
+        }
+        updateGame(thisGame,gamesList);
         console.log('socket ready: '+thisSocket.user.name+' other socket: '+otherSocket.user.name);
         socket.to(otherSocket.id).emit('updateOponentReady', true);
     });
-
 });

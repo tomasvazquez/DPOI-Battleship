@@ -3,4 +3,5 @@ exports.MySocket = function (id, user) {
     this.user = user;
     this.status = undefined;
     this.board = undefined;
+    this.playId = undefined;
 };

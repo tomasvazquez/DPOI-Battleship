@@ -24,6 +24,7 @@ export class WarmingComponent implements OnInit {
   private socket: SocketIOClient.Socket;
   private status: String;
   user;
+  playId= 0;
   opponent = undefined;
   opponentReady = false;
   isGameSet = false;
@@ -60,8 +61,8 @@ export class WarmingComponent implements OnInit {
 
   getStatus() {
     const that = this;
-    this.socket.on('updateStatus', function (msg) {
-      that.opponent = msg;
+    this.socket.on('updateStatus', function (json) {
+      that.opponent = json;
       that.userData.setOpponentData(that.opponent);
     });
     this.socket.on('updateOponentReady',function (msg) {
@@ -103,12 +104,30 @@ export class WarmingComponent implements OnInit {
     document.getElementById('play-button').className = 'waves-effect waves-light btn-large disabled';
     document.getElementById('reset-board-button').className = 'waves-effect waves-light btn disabled';
     document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
-    this.socket.emit('setReady', this.user.name);
+    var simpleBoard = this.transformBoard();
+    this.socket.emit('setReady', {"user": this.user, "playId": this.opponent.playId, "board": simpleBoard});
+    // this.socket.emit('setBoard', this.board);
 
     if (this.isGameSet && this.opponentReady){
       this.userData.setBoard(this.board);
       this.router.navigate(['game']);
     }
+  }
+
+  transformBoard(){
+    let simpleBoard = [];
+    for(let i = 0; i< 10; i++){
+      const row = [];
+      for (let e = 0; e<10; e++){
+        if(this.board[i][e].isOccupied){
+            row.push(1);
+        }else{
+          row.push(0);
+        }
+      }
+      simpleBoard.push(row);
+    }
+    return simpleBoard;
   }
 
   createShips(sized2, sized3, sized4) {
