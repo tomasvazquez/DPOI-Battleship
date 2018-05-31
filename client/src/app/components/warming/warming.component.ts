@@ -111,6 +111,7 @@ export class WarmingComponent implements OnInit {
     if (this.isGameSet && this.opponentReady){
       this.userData.setBoard(this.board);
       this.router.navigate(['game']);
+
     }
   }
 
