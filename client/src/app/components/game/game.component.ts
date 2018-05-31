@@ -43,14 +43,14 @@ export class GameComponent implements OnInit {
     this.socket.on('updateTurn', function (boolean) {
       that.myTurn = boolean;
     });
-    this.socket.on('getOpponentShot', function () {
+    this.socket.on('getOpponentShot', function (json) {
       //cambiar el color de la celda donde me dispararon
       //cambiar mi turno
     });
-    this.socket.on('drawMyShot', function () {
+    this.socket.on('drawMyShot', function (json) {
       //pintar la celda donde hice click depende si es agua o barco
     });
-    this.socket.on('gameOver', function () {
+    this.socket.on('gameOver', function (json) {
       // avisar si ganaste o perdiste
     });
   }
