@@ -75,6 +75,7 @@ export class WarmingComponent implements OnInit {
     });
     this.socket.on('opponentDisconnect', function (msg) {
       alert(msg+" leave the game");
+      // M.toast({html: msg + " left the game"});
       that.opponent = undefined;
       that.opponentReady = false;
       that.isGameSet = false;

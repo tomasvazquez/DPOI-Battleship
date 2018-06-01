@@ -93,4 +93,18 @@ export class GameComponent implements OnInit {
     }
   }
 
+  getCellClass(x2,y2) {
+    if (this.opponentBoard[y2][x2].isFired) {
+      if (!this.opponentBoard[y2][x2].isOccupied) {
+        return 'water cell';
+      } else if (this.opponentBoard[y2][x2].ship.isSunk()) {
+        return 'sunk cell';
+      } else {
+        return 'hit cell'
+      }
+    } else {
+      return 'cell';
+    }
+  }
+
 }

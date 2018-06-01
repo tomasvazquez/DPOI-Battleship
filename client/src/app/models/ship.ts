@@ -25,4 +25,14 @@ export class Ship {
     this.isVertical = !this.isVertical;
   }
 
+  public isSunk() {
+    let sunk = true;
+    for(let i = 0; i < this.cells.length; i++){
+      if (!this.cells[i].isFired) {
+        return false;
+      }
+    }
+    return sunk;
+  }
+
 }

@@ -162,3 +162,15 @@ section {
 .red-ship {
   background-color: red;
 }
+
+.water {
+  background-color: skyblue;
+}
+
+.hit {
+  background-color: red;
+}
+
+.sunk {
+  background-color: #818181;
+}
