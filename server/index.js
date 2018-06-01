@@ -2,26 +2,18 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mySocket = require('./MySocket.js');
+var game = require('./Game.js');
 
 var socketConnections = 0;
-var socketsPlay = new Map();
+var gamesList = [];
 var playId = 0;
+var gameId = 0;
 var socketsList = [];
-
 var waitingWebSocket = null;
 
-function findObjectByName(array, value) {
+function findObjectByOtherId(array, value, otherName) {
     for (var i = 0; i < array.length; i++) {
-        if (array[i].user.name === value) {
-            return array[i];
-        }
-    }
-    return null;
-}
-
-function findObjectByOtherStatus(array, status, otherName) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].status === status && array[i].user.name != otherName) {
+        if (array[i].playId === value && array[i].user.name != otherName) {
             return array[i];
         }
     }
@@ -36,6 +28,44 @@ function findObjectById(array, value) {
     }
     return null;
 }
+
+function findSocketByName(array, value) {
+    if (array.ws1.user.name === value){
+        return array.ws1;
+    }else{
+        return array.ws2;
+    }
+}
+
+function findSocketById(array, value){
+    if (array.ws1.id === value){
+        return array.ws1;
+    }else{
+        return array.ws2;
+    }
+}
+
+function findOtherSocket(array, value){
+    if (array.ws1.id === value){
+        return array.ws2;
+    }else{
+        return array.ws1;
+    }
+}
+
+function updateGame(game,list) {
+    var oldGame = findObjectById(list,game.id);
+    var index = list.indexOf(oldGame);
+    if (index > -1) {
+        if (list.length === 1){
+           gamesList = [];
+        }else{
+            gamesList = list.splice(index, 1);
+        }
+    }
+    gamesList.push(game);
+}
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -52,23 +82,33 @@ io.on('connection', function(socket){
         socketConnections++;
         console.log('user connected: ' +socket.id+", connections: "+socketConnections);
     });
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function(json){
+        console.log('disconnect '+socket.id);
+        console.log(json);
         socketConnections--;
         var ws = findObjectById(socketsList,socket.id);
+        console.log(waitingWebSocket);
         if(waitingWebSocket == null) {
-            var otherSocket = findObjectByOtherStatus(socketsList, ws.status, ws.user.name);
+            var otherSocket = findObjectByOtherId(socketsList, ws.playId, ws.user.name);
             waitingWebSocket = otherSocket;
             var index = socketsList.indexOf(ws);
-            socketsList.splice(index, 1);
+            socketsList = socketsList.splice(index, 1);
+            var game = findObjectById(gamesList,ws.playId);
+            var gameIndex = gamesList.indexOf(game);
+            gamesList = gamesList.splice(gameIndex,1);
             socket.to(otherSocket.id).emit('opponentDisconnect', ws.user.name);
         }else if (waitingWebSocket.id == socket.id){
             waitingWebSocket == null;
-            console.log('ws deleted');
         }else{
-            waitingWebSocket.status = ws.status;
+            waitingWebSocket.playId = ws.playId;
             var index = socketsList.indexOf(ws);
             socketsList.splice(index,1);
             socketsList.push(waitingWebSocket);
+            var game = findObjectById(gamesList,ws.playId);
+            game.ws1 = waitingWebSocket;
+            var otherSocket = findOtherSocket(game,socket.id);
+            game.ws2 = otherSocket;
+            updateGame(game,gamesList)
             var json = {'oldSocket' : ws.user.name, 'newSocket' : waitingWebSocket.user.name};
             waitingWebSocket == null;
             socket.to(otherSocket.id).emit('opponentChange',json);
@@ -83,10 +123,16 @@ io.on('connection', function(socket){
         else {
             playId++;
             var ws = new mySocket.MySocket(socket.id,json);
-            waitingWebSocket.status = playId;
-            ws.status = playId;
+            waitingWebSocket.playId = playId;
+            ws.playId = playId;
+            waitingWebSocket.status = 'warming';
+            ws.status = 'warming';
+            json.playId = playId;
+            waitingWebSocket.user.playId = playId;
             socketsList.push(ws);
             socketsList.push(waitingWebSocket);
+            var newGame = new game.Game(playId,ws,waitingWebSocket,'warming');
+            gamesList.push(newGame);
             socket.emit('updateStatus',waitingWebSocket.user );
             socket.to(waitingWebSocket.id).emit('updateStatus', json);
             console.log('socket: '+json.name+', Ready to play with '+waitingWebSocket.user.name );
@@ -94,11 +140,48 @@ io.on('connection', function(socket){
         }
 
     });
-    socket.on('setReady',function (msg) {
-        var thisSocket = findObjectByName(socketsList,msg);
-        var otherSocket = findObjectByOtherStatus(socketsList,thisSocket.status,thisSocket.user.name);
+    socket.on('setReady',function (json) {
+        var thisGame = findObjectById(gamesList, json.playId);
+        var thisSocket = findSocketById(thisGame,socket.id);
+        var otherSocket = findOtherSocket(thisGame,socket.id);
+        thisSocket.board = json.board;
+        thisSocket.status = 'ready';
+        thisGame.ws1 = thisSocket;
+        thisGame.ws2 = otherSocket;
+        if (thisSocket.status === 'ready' && otherSocket.status === 'ready'){
+            thisGame.status = 'ready';
+            console.log('game is ready to play');
+        }
+        updateGame(thisGame,gamesList);
         console.log('socket ready: '+thisSocket.user.name+' other socket: '+otherSocket.user.name);
         socket.to(otherSocket.id).emit('updateOponentReady', true);
     });
+    socket.on('updateSocket', function(json){
+       var game  = findObjectById(gamesList,json.playId);
+       var thisSocket = findSocketByName(game,json.user.name);
+       var oldId = thisSocket.id;
+       thisSocket.id = socket.id;
+       thisSocket.status = 'playing';
+       if (game.ws1.user.name === json.user.name){
+           game.ws1 = thisSocket;
+       }else{
+           game.ws2 = thisSocket;
+       }
+       if (game.ws2.status === 'playing' && game.ws1.status === 'playing'){
+           game.status = 'playing';
+       }
+       updateGame(game,gamesList);
+        console.log("se actualizo el id del socket de "+oldId+" a "+socket.id);
+       if (game.status === 'playing'){
+           var random = Math.floor(Math.random() * 1);
+           if (random === 1){
+               socket.to(game.ws1.id).emit('updateTurn',true);
+               console.log(game.ws1.user.name +' arranca jugando');
+           }else{
+               socket.to(game.ws2.id).emit('updateTurn',true);
+               console.log(game.ws2.user.name +' arranca jugando');
 
+           }
+       }
+    });
 });

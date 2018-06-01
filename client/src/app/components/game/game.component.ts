@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Cell} from "../../models/cell";
-import {FacebookService} from "ngx-facebook";
 import {UserDataService} from "../../user-data.service";
+import * as io from 'socket.io-client';
+
 
 @Component({
   selector: 'app-game',
@@ -10,18 +11,22 @@ import {UserDataService} from "../../user-data.service";
 })
 export class GameComponent implements OnInit {
 
+  private socket: SocketIOClient.Socket;
   userBoard = [];
   opponentBoard = [];
   boardSize = 10;
   user;
   opponent;
-  myTurn = true;
+  myTurn = false;
 
   constructor(private userData: UserDataService) { }
 
   ngOnInit() {
     this.createBoard();
     this.getData();
+    this.socket = io('http://localhost:3000');
+    this.socket.emit('updateSocket', {"user": this.user, "playId": this.opponent.playId});
+    this.socketEvents();
   }
 
   getData() {
@@ -31,7 +36,23 @@ export class GameComponent implements OnInit {
       .subscribe(json => this.opponent = json);
     this.userData.getBoard()
       .subscribe(json => this.userBoard = json);
-    console.log(this.userBoard);
+  }
+
+  socketEvents(){
+    const that = this;
+    this.socket.on('updateTurn', function (boolean) {
+      that.myTurn = boolean;
+    });
+    this.socket.on('getOpponentShot', function (json) {
+      //cambiar el color de la celda donde me dispararon
+      //cambiar mi turno
+    });
+    this.socket.on('drawMyShot', function (json) {
+      //pintar la celda donde hice click depende si es agua o barco
+    });
+    this.socket.on('gameOver', function (json) {
+      // avisar si ganaste o perdiste
+    });
   }
 
   onLoadedPicture() {
@@ -57,9 +78,9 @@ export class GameComponent implements OnInit {
     if (this.myTurn) {
       console.log(`shot opponent in ${x},${y}`);
       this.myTurn = !this.myTurn;
-    } else {
-      this.myTurn = !this.myTurn;
+      this.socket.emit('shootOpponent',{"x": x, "y": y});
     }
+    console.log('not my turn to shoot');
   }
 
   checkIfTurn() {
