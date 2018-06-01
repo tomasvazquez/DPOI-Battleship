@@ -56,8 +56,8 @@ export class GameComponent implements OnInit {
   }
 
   onLoadedPicture() {
-    document.getElementById('user-info-col').className = 'col';
-    document.getElementById('opponent-info-col').className = 'col';
+    document.getElementById('user-info-col').className = 'col s12 m6 l6';
+    document.getElementById('opponent-info-col').className = 'col s12 m6 l6';
     document.getElementById('username-spinner').className = 'preloader-wrapper big hide';
     document.getElementById('opponent-spinner').className = 'preloader-wrapper big hide';
   }

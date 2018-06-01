@@ -4,7 +4,7 @@
   </a>
 
   <div id="turns-row-container" class="row">
-    <div id="user-info-col" class="col hide">
+    <div id="user-info-col" class="col s12 m6 l6 hide">
       <div id="username-card" class="card small horizontal">
         <div class="card-image">
           <!--<img (load)="onLoadedPicture()" [src]="userProfilePictureUrl"/>-->
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div id="opponent-info-col" class="col hide">
+    <div id="opponent-info-col" class="col s12 m6 l6 hide">
       <div id="opponent-card" class="card small horizontal">
         <div class="card-image">
           <!--<img (load)="onLoadedPicture()" [src]="opponentProfilePictureUrl"/>-->
@@ -57,12 +57,11 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <div id="boards-row-container" class="row">
     {{checkIfTurn()}}
-    <div class="col offset-s1">
+    <div class="col s12 m6 l6">
       <div class="board-card card">
         <section id="user-board">
           <div class="board" *ngFor="let x1 of ['-',0,1,2,3,4,5,6,7,8,9]">
@@ -80,7 +79,7 @@
         </section>
       </div>
     </div>
-    <div class="col offset-s1">
+    <div class="col s12 m6 l6">
       <div class="board-card card">
         <section id="opponent-board" >
           <div class="board" *ngFor="let x2 of ['-',0,1,2,3,4,5,6,7,8,9]">

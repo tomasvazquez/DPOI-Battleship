@@ -11,6 +11,15 @@
   padding-top: 250px;
 }
 
+#opponent-info-col, #user-info-col, #boards-row-container > .col.s12.m6.l6 {
+  display: flex;
+  justify-content: center;
+}
+
+#username-card, #opponent-card {
+  max-width: 440px;
+}
+
 .card.small.horizontal > .card-content {
   max-height: none !important;
   display: flex;
@@ -84,6 +93,7 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 440px;
 }
 
 .dndDropzoneDisabled {
