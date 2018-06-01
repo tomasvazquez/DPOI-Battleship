@@ -40,17 +40,22 @@ export class WarmingComponent implements OnInit {
   constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
   ngOnInit() {
-    this.shipColors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'black'];
+    this.initWarming();
+    var options = {"transports":["polling"]};
+    this.socket = io('http://localhost:3000',options);
+    this.socket.emit('message', this.user);
+    this.socket.emit('getStatus', this.user);
+    this.getStatus();
+  }
+
+  initWarming(){
+    this.shipColors = ['pink', 'orange', 'yellow', 'green', 'blue', 'purple', 'black'];
     this.createBoard();
     this.createShips(2, 3, 2);
     this.isGameSet = false;
     this.isButtonClicked = false;
     this.getUserData();
     this.status = '';
-    this.socket = io('http://localhost:3000');
-    this.socket.emit('message', this.user);
-    this.socket.emit('getStatus', this.user);
-    this.getStatus();
   }
 
   getUserData() {
@@ -107,7 +112,6 @@ export class WarmingComponent implements OnInit {
     document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
     var simpleBoard = this.transformBoard();
     this.socket.emit('setReady', {"user": this.user, "playId": this.opponent.playId, "board": simpleBoard});
-    // this.socket.emit('setBoard', this.board);
 
     if (this.isGameSet && this.opponentReady){
       this.userData.setBoard(this.board);
@@ -171,7 +175,7 @@ export class WarmingComponent implements OnInit {
     this.board = [];
     this.ships = [];
     this.shipsPlaced = 0;
-    this.ngOnInit();
+    this.initWarming();
   }
 
   randomPlacement() {

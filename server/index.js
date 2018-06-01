@@ -148,12 +148,12 @@ io.on('connection', function(socket){
         thisSocket.status = 'ready';
         thisGame.ws1 = thisSocket;
         thisGame.ws2 = otherSocket;
+        console.log('socket ready: '+thisSocket.user.name+' other socket: '+otherSocket.user.name);
         if (thisSocket.status === 'ready' && otherSocket.status === 'ready'){
             thisGame.status = 'ready';
             console.log('game is ready to play');
         }
         updateGame(thisGame,gamesList);
-        console.log('socket ready: '+thisSocket.user.name+' other socket: '+otherSocket.user.name);
         socket.to(otherSocket.id).emit('updateOponentReady', true);
     });
     socket.on('updateSocket', function(json){
@@ -183,5 +183,17 @@ io.on('connection', function(socket){
 
            }
        }
+    });
+
+    socket.on('shootOpponent',function (json) {
+        var thisGame = findObjectById(gamesList,json.playId);
+        var thisSocket = findSocketById(thisGame,socket.id);
+        var otherSocket = findOtherSocket(thisGame,socket.id);
+        var value = otherSocket.board[json.y][json.x];
+        var isOccupied = value === 1;
+        var response = {"isOccupied" : isOccupied, "x": json.x, "y": json.y};
+        socket.emit('getMyShot', response);
+        socket.to(otherSocket.id).emit('getOpponentShot', response);
+        socket.to(otherSocket.id).emit('updateTurn', true);
     });
 });

@@ -72,7 +72,7 @@
               <div *ngIf="x1 == '-'" class="cell-id">
                 {{y1}}
               </div>
-              <div *ngIf="x1 !== '-'" [class]="this.userBoard[y1][x1].ship ? this.userBoard[y1][x1].ship.color + '-ship cell' : 'cell'">
+              <div *ngIf="x1 !== '-'" [class]="getUserCellClass(x1,y1)">
               </div>
             </div>
           </div>
@@ -90,8 +90,8 @@
               <div *ngIf="x2 == '-'" class="cell-id">
                 {{y2}}
               </div>
-              <a ngClass="{{myTurn ? 'clickable-cell' : 'clickable-cell disabled'}}" (click)="shoot(x2,y2)">
-                <div id="{{x2}},{{y2}}" *ngIf="x2 !== '-'" [class]="getCellClass(x2,y2)"></div>
+              <a [class]="isCellClickable(x2, y2)" (click)="shoot(x2,y2)">
+                <div id="{{x2}},{{y2}}" *ngIf="x2 !== '-'" [class]="getOpponentCellClass(x2,y2)"></div>
               </a>
             </div>
           </div>

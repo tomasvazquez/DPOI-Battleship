@@ -44,11 +44,11 @@ export class GameComponent implements OnInit {
       that.myTurn = boolean;
     });
     this.socket.on('getOpponentShot', function (json) {
-      //cambiar el color de la celda donde me dispararon
-      //cambiar mi turno
+      that.userBoard[json.y][json.x].isFired = true;
     });
-    this.socket.on('drawMyShot', function (json) {
-      //pintar la celda donde hice click depende si es agua o barco
+    this.socket.on('getMyShot', function (json) {
+      that.opponentBoard[json.y][json.x].isFired = true;
+      that.opponentBoard[json.y][json.x].isOccupied = json.isOccupied;
     });
     this.socket.on('gameOver', function (json) {
       // avisar si ganaste o perdiste
@@ -75,10 +75,10 @@ export class GameComponent implements OnInit {
   }
 
   shoot(x,y) {
-    if (this.myTurn) {
+    if (this.myTurn && !this.opponentBoard[y][x].isFired) {
       console.log(`shot opponent in ${x},${y}`);
       this.myTurn = !this.myTurn;
-      this.socket.emit('shootOpponent',{"x": x, "y": y});
+      this.socket.emit('shootOpponent',{"x": x, "y": y, "playId": this.opponent.playId});
     }
     console.log('not my turn to shoot');
   }
@@ -93,17 +93,44 @@ export class GameComponent implements OnInit {
     }
   }
 
-  getCellClass(x2,y2) {
-    if (this.opponentBoard[y2][x2].isFired) {
-      if (!this.opponentBoard[y2][x2].isOccupied) {
+  getOpponentCellClass(x,y) {
+    if (this.opponentBoard[y][x].isFired) {
+      if (!this.opponentBoard[y][x].isOccupied) {
         return 'water cell';
-      } else if (this.opponentBoard[y2][x2].ship.isSunk()) {
+      } else if (this.opponentBoard[y][x].ship && this.opponentBoard[y][x].ship.isSunk()) {
         return 'sunk cell';
       } else {
         return 'hit cell'
       }
     } else {
       return 'cell';
+    }
+  }
+
+  getUserCellClass(x,y) {
+    if (this.userBoard[y][x].isFired) {
+      if (!this.userBoard[y][x].isOccupied) {
+        return 'water cell';
+      } else if (this.userBoard[y][x].ship.isSunk()) {
+        return 'sunk cell';
+      } else {
+        return 'hit cell'
+      }
+    } else {
+      if (this.userBoard[y][x].ship) {
+        return this.userBoard[y][x].ship.color + '-ship cell';
+      } else {
+        return 'cell';
+      }
+    }
+  }
+
+  isCellClickable(x, y) {
+    if (x === '-') return ;
+    if (!this.myTurn || this.opponentBoard[y][x].isFired) {
+      return 'clickable-cell disabled';
+    } else {
+      return 'clickable-cell';
     }
   }
 
