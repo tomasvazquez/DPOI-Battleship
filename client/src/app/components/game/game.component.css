@@ -174,3 +174,7 @@ section {
 .sunk {
   background-color: #818181;
 }
+
+#auto-fire-button > span {
+  margin-left: 10px;
+}

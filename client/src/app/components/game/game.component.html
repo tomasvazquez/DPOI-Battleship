@@ -81,7 +81,7 @@
     </div>
     <div class="col s12 m6 l6">
       <div class="board-card card">
-        <section id="opponent-board" >
+        <section id="opponent-board">
           <div class="board" *ngFor="let x2 of ['-',0,1,2,3,4,5,6,7,8,9]">
             <div class="cell-id">
               {{x2}}
@@ -97,6 +97,15 @@
           </div>
         </section>
       </div>
+    </div>
+  </div>
+
+  <div id="auto-fire-row" class="row">
+    <div class="col offset-s7">
+      <a id="auto-fire-button" [class]="myTurn ? 'btn-large' : 'btn-large disabled'" (click)="autoFire()">
+        <i class="fas fa-fire"></i>
+        <span>Auto-fire</span>
+      </a>
     </div>
   </div>
 </div>

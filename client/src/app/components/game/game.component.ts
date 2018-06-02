@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Cell} from "../../models/cell";
 import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
+import {WarmingComponent} from "../warming/warming.component";
 
 
 @Component({
@@ -131,6 +132,23 @@ export class GameComponent implements OnInit {
       return 'clickable-cell disabled';
     } else {
       return 'clickable-cell';
+    }
+  }
+
+  autoFire() {
+    const coordenates = this.findRandomShootablePlace([]);
+    this.shoot(parseInt(coordenates[0]), parseInt(coordenates[1]));
+  }
+
+  private findRandomShootablePlace(coordenates) {
+    const x = WarmingComponent.getRandomInt();
+    const y = WarmingComponent.getRandomInt();
+    if (!this.opponentBoard[y][x].isFired) {
+      coordenates.push(x);
+      coordenates.push(y);
+      return coordenates;
+    } else {
+      return this.findRandomShootablePlace([]);
     }
   }
 

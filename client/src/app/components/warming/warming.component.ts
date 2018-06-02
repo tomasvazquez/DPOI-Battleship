@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {FacebookService} from "ngx-facebook";
 import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
+import * as M from 'materialize-css';
 
 @Component({
   selector: 'app-warming',
@@ -79,8 +80,7 @@ export class WarmingComponent implements OnInit {
       }
     });
     this.socket.on('opponentDisconnect', function (msg) {
-      alert(msg+" leave the game");
-      // M.toast({html: msg + " left the game"});
+      M.toast({html: msg + " left the game"});
       that.opponent = undefined;
       that.opponentReady = false;
       that.isGameSet = false;
@@ -192,8 +192,8 @@ export class WarmingComponent implements OnInit {
   }
 
   private findRandomAvailablePlace(coordenates, ship) {
-    const x = this.getRandomInt();
-    const y = this.getRandomInt();
+    const x = WarmingComponent.getRandomInt();
+    const y = WarmingComponent.getRandomInt();
     if (!this.board[y][x].isOccupied) {
       if (ship.isVertical && this.isShipPlaceableVertically(x, y, ship)) {
         coordenates.push(x);
@@ -211,7 +211,7 @@ export class WarmingComponent implements OnInit {
     }
   }
 
-  getRandomInt() {
+  static getRandomInt() {
     return Math.floor(Math.random() * (10));
   }
 
