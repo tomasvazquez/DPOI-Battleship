@@ -66,6 +66,34 @@ function updateGame(game,list) {
     gamesList.push(game);
 }
 
+function countShipFire(board, shootBoard, value) {
+    var size = 0;
+    var shoot = 0;
+    for (var i = 0; i < 10; i++) {
+        for (var e = 0; e < 10; e++) {
+            if (board[i][e] === value){
+                size++;
+                shoot += shootBoard[i][e];
+            }
+        }
+    }
+    return (size === shoot);
+}
+function getShipCells(board, value) {
+    var cells = [];
+    for (var i = 0; i < 10; i++) {
+        for (var e = 0; e < 10; e++) {
+            if (board[i][e] === value){
+               var coord = [];
+                coord.push(i);
+                coord.push(e);
+                cells.push(coord);
+            }
+        }
+    }
+    return cells;
+}
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -162,6 +190,13 @@ io.on('connection', function(socket){
        var oldId = thisSocket.id;
        thisSocket.id = socket.id;
        thisSocket.status = 'playing';
+       var xBoard = [];
+       for( var e=0; e<10; e++) {
+           for (var i = 0; i < 10; i++) {
+               xBoard.push(0);
+           }
+           thisSocket.shootBoard.push(xBoard);
+       }
        if (game.ws1.user.name === json.user.name){
            game.ws1 = thisSocket;
        }else{
@@ -179,7 +214,7 @@ io.on('connection', function(socket){
                console.log(game.ws1.user.name +' arranca jugando');
            }else{
                socket.to(game.ws2.id).emit('updateTurn',true);
-               console.log(game.ws2.user.name +' arranca jugando');
+               console.log(game.ws2.user.name +' starts playing');
 
            }
        }
@@ -190,10 +225,22 @@ io.on('connection', function(socket){
         var thisSocket = findSocketById(thisGame,socket.id);
         var otherSocket = findOtherSocket(thisGame,socket.id);
         var value = otherSocket.board[json.y][json.x];
-        var isOccupied = value === 1;
-        var response = {"isOccupied" : isOccupied, "x": json.x, "y": json.y};
+        var isOccupied = value !== 0;
+        var ship = undefined;
+        if(isOccupied){
+            otherSocket.shootBoard[json.y][json.x] = 1;
+            if(countShipFire(otherSocket.board, otherSocket.shootBoard, value)){
+                var cells = getShipCells(otherSocket.board, value);
+                ship = {"id": value.substring(6,7), "size": value.substring(4,5), "cells": cells};
+            }
+        }
+        var response = {"isOccupied" : isOccupied, "x": json.x, "y": json.y, "ship": ship};
         socket.emit('getMyShot', response);
         socket.to(otherSocket.id).emit('getOpponentShot', response);
         socket.to(otherSocket.id).emit('updateTurn', true);
+    });
+    socket.on('notifySunk', function (ship) {
+       console.log(ship.isFired);
+        console.log(ship.ship.id);
     });
 });

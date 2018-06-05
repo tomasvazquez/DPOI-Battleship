@@ -3,6 +3,7 @@ import {Cell} from "../../models/cell";
 import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
 import {WarmingComponent} from "../warming/warming.component";
+import {Ship} from '../../models/ship';
 
 
 @Component({
@@ -50,6 +51,9 @@ export class GameComponent implements OnInit {
     this.socket.on('getMyShot', function (json) {
       that.opponentBoard[json.y][json.x].isFired = true;
       that.opponentBoard[json.y][json.x].isOccupied = json.isOccupied;
+      if (json.ship !== undefined){
+        var ship = new Ship(json.ship.id, json.ship.size, 'black');
+      }
     });
     this.socket.on('gameOver', function (json) {
       // avisar si ganaste o perdiste

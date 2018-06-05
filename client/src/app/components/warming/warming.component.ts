@@ -125,8 +125,9 @@ export class WarmingComponent implements OnInit {
     for(let i = 0; i< 10; i++){
       const row = [];
       for (let e = 0; e<10; e++){
-        if(this.board[i][e].isOccupied){
-            row.push(1);
+        var ship = this.board[i][e].ship;
+        if(ship !== undefined){
+            row.push(ship.id);
         }else{
           row.push(0);
         }
