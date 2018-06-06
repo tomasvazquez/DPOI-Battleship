@@ -52,7 +52,14 @@ export class GameComponent implements OnInit {
       that.opponentBoard[json.y][json.x].isFired = true;
       that.opponentBoard[json.y][json.x].isOccupied = json.isOccupied;
       if (json.ship !== undefined){
-        var ship = new Ship(json.ship.id, json.ship.size, 'black');
+        const cells = [];
+        const ship = new Ship(json.ship.id, json.ship.size, undefined);
+        for (let i = 0; i < json.ship.cells.length; i++) {
+          let y = json.ship.cells[i][0];
+          let x = json.ship.cells[i][1];
+          cells.push(that.opponentBoard[y][x]);
+          that.opponentBoard[y][x].ship = ship;
+        }
       }
     });
     this.socket.on('gameOver', function (json) {
@@ -85,7 +92,6 @@ export class GameComponent implements OnInit {
       this.myTurn = !this.myTurn;
       this.socket.emit('shootOpponent',{"x": x, "y": y, "playId": this.opponent.playId});
     }
-    console.log('not my turn to shoot');
   }
 
   checkIfTurn() {
