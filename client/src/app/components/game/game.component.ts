@@ -63,7 +63,8 @@ export class GameComponent implements OnInit {
       }
     });
     this.socket.on('gameOver', function (json) {
-      // avisar si ganaste o perdiste
+      setTimeout('', 5000);
+      alert("You win: "+json.win);
     });
   }
 

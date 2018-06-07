@@ -94,6 +94,23 @@ function getShipCells(board, value) {
     return cells;
 }
 
+function sinkShip(board, cells) {
+    for (var i=0; i < cells.length; i++){
+        var coords = cells[i];
+        board[coords[0]][coords[1]] = 0;
+    }
+    var empty = true;
+    for (var i = 0; i < 10; i++) {
+        for (var e = 0; e < 10; e++) {
+            if (board[i][e] != 0){
+                empty = false;
+                return empty;
+            }
+        }
+    }
+    return empty;
+}
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -192,11 +209,13 @@ io.on('connection', function(socket){
        thisSocket.status = 'playing';
        var xBoard = [];
        for( var e=0; e<10; e++) {
+           var yBoard = [];
            for (var i = 0; i < 10; i++) {
-               xBoard.push(0);
+               yBoard.push(0);
            }
-           thisSocket.shootBoard.push(xBoard);
+           xBoard.push(yBoard);
        }
+       thisSocket.shootBoard = xBoard;
        if (game.ws1.user.name === json.user.name){
            game.ws1 = thisSocket;
        }else{
@@ -227,10 +246,12 @@ io.on('connection', function(socket){
         var value = otherSocket.board[json.y][json.x];
         var isOccupied = value !== 0;
         var ship = undefined;
+        var gameOver = false;
         if(isOccupied){
             otherSocket.shootBoard[json.y][json.x] = 1;
             if(countShipFire(otherSocket.board, otherSocket.shootBoard, value)){
                 var cells = getShipCells(otherSocket.board, value);
+                gameOver = sinkShip(otherSocket.board, cells);
                 ship = {"id": value.substring(6,7), "size": value.substring(4,5), "cells": cells};
             }
         }
@@ -238,9 +259,9 @@ io.on('connection', function(socket){
         socket.emit('getMyShot', response);
         socket.to(otherSocket.id).emit('getOpponentShot', response);
         socket.to(otherSocket.id).emit('updateTurn', true);
-    });
-    socket.on('notifySunk', function (ship) {
-       console.log(ship.isFired);
-        console.log(ship.ship.id);
+        if(gameOver) {
+            socket.emit('gameOver', {"win": gameOver});
+            socket.to(otherSocket.id).emit('gameOver', {"win" : !gameOver});
+        }
     });
 });
