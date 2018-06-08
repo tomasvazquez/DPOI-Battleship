@@ -4,6 +4,8 @@ import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
 import {WarmingComponent} from "../warming/warming.component";
 import {Ship} from '../../models/ship';
+import * as M from 'materialize-css';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -21,12 +23,11 @@ export class GameComponent implements OnInit {
   opponent;
   myTurn = false;
 
-  constructor(private userData: UserDataService) { }
+  constructor(private userData: UserDataService, private router: Router) { }
 
   ngOnInit() {
     this.createBoard();
     this.getData();
-    this.socket = io('http://localhost:3000');
     this.socket.emit('updateSocket', {"user": this.user, "playId": this.opponent.playId});
     this.socketEvents();
   }
@@ -38,6 +39,7 @@ export class GameComponent implements OnInit {
       .subscribe(json => this.opponent = json);
     this.userData.getBoard()
       .subscribe(json => this.userBoard = json);
+    this.socket = this.userData.getSocket();
   }
 
   socketEvents(){

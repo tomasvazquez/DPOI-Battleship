@@ -11,15 +11,6 @@ var gameId = 0;
 var socketsList = [];
 var waitingWebSocket = null;
 
-function findObjectByOtherId(array, value, otherName) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].playId === value && array[i].user.name != otherName) {
-            return array[i];
-        }
-    }
-    return null;
-}
-
 function findObjectById(array, value) {
     for (var i = 0; i < array.length; i++) {
         if (array[i].id === value) {
@@ -100,15 +91,24 @@ function sinkShip(board, cells) {
         board[coords[0]][coords[1]] = 0;
     }
     var empty = true;
-    for (var i = 0; i < 10; i++) {
+    for (var a = 0; a < 10; a++) {
         for (var e = 0; e < 10; e++) {
-            if (board[i][e] != 0){
+            if (board[a][e] !== 0){
                 empty = false;
                 return empty;
             }
         }
     }
     return empty;
+}
+
+function findGameBySocket(gameList, value) {
+    for (var i = 0; i < gameList.length; i++) {
+        if (gameList[i].ws1.id === value || gameList[i].ws2.id === value) {
+            return gameList[i];
+        }
+    }
+    return null;
 }
 
 app.get('/', function(req, res){
@@ -127,37 +127,50 @@ io.on('connection', function(socket){
         socketConnections++;
         console.log('user connected: ' +socket.id+", connections: "+socketConnections);
     });
-    socket.on('disconnect', function(json){
+    socket.on('disconnect', function(){
         console.log('disconnect '+socket.id);
-        console.log(json);
         socketConnections--;
-        var ws = findObjectById(socketsList,socket.id);
-        console.log(waitingWebSocket);
         if(waitingWebSocket == null) {
-            var otherSocket = findObjectByOtherId(socketsList, ws.playId, ws.user.name);
-            waitingWebSocket = otherSocket;
-            var index = socketsList.indexOf(ws);
-            socketsList = socketsList.splice(index, 1);
-            var game = findObjectById(gamesList,ws.playId);
-            var gameIndex = gamesList.indexOf(game);
-            gamesList = gamesList.splice(gameIndex,1);
-            socket.to(otherSocket.id).emit('opponentDisconnect', ws.user.name);
-        }else if (waitingWebSocket.id == socket.id){
+            var game = findGameBySocket(gamesList,socket.id);
+            var ws = findSocketById(game, socket.id);
+            var otherSocket = findOtherSocket(game,socket.id);
+            if (game.status === 'playing'){
+                var gameIndex = gamesList.indexOf(game);
+                gamesList = gamesList.splice(gameIndex,1);
+                socket.to(otherSocket.id).emit('gameOver', {"result": true, "disconnected": true});
+            }else{
+                var gameIndex = gamesList.indexOf(game);
+                gamesList = gamesList.splice(gameIndex,1);
+                otherSocket.status = 'waiting';
+                waitingWebSocket = otherSocket;
+                socket.to(otherSocket.id).emit('opponentDisconnect');
+            }
+
+        }else if (waitingWebSocket.id == socket.id) {
             waitingWebSocket == null;
         }else{
-            waitingWebSocket.playId = ws.playId;
-            var index = socketsList.indexOf(ws);
-            socketsList.splice(index,1);
-            socketsList.push(waitingWebSocket);
-            var game = findObjectById(gamesList,ws.playId);
-            game.ws1 = waitingWebSocket;
+            playId++;
+            var game = findGameBySocket(gamesList,socket.id);
+            var ws = findSocketById(game, socket.id);
             var otherSocket = findOtherSocket(game,socket.id);
-            game.ws2 = otherSocket;
-            updateGame(game,gamesList)
-            var json = {'oldSocket' : ws.user.name, 'newSocket' : waitingWebSocket.user.name};
-            waitingWebSocket == null;
-            socket.to(otherSocket.id).emit('opponentChange',json);
+            var gameIndex = gamesList.indexOf(game);
+            gamesList = gamesList.splice(gameIndex,1);
+            socket.to(otherSocket.id).emit('opponentDisconnect');
+
+            otherSocket.playId = playId;
+            waitingWebSocket.playId = playId;
+            waitingWebSocket.status = 'warming';
+            otherSocket.status = 'warming';
+            waitingWebSocket.user.playId = playId;
+            otherSocket.user.playId = playId;
+            var newGame = new game.Game(playId,otherSocket,waitingWebSocket,'warming');
+            gamesList.push(newGame);
+            console.log(waitingWebSocket);
+            socket.to(otherSocket.id).emit('updateStatus',waitingWebSocket.user );
+            socket.to(waitingWebSocket.id).emit('updateStatus', otherSocket.user);
+            waitingWebSocket = null;
         }
+
         console.log('user disconnected '+ socket.id+', connections: '+socketConnections);
     });
     socket.on('getStatus', function(json){
@@ -204,8 +217,6 @@ io.on('connection', function(socket){
     socket.on('updateSocket', function(json){
        var game  = findObjectById(gamesList,json.playId);
        var thisSocket = findSocketByName(game,json.user.name);
-       var oldId = thisSocket.id;
-       thisSocket.id = socket.id;
        thisSocket.status = 'playing';
        var xBoard = [];
        for( var e=0; e<10; e++) {
@@ -216,16 +227,10 @@ io.on('connection', function(socket){
            xBoard.push(yBoard);
        }
        thisSocket.shootBoard = xBoard;
-       if (game.ws1.user.name === json.user.name){
-           game.ws1 = thisSocket;
-       }else{
-           game.ws2 = thisSocket;
-       }
        if (game.ws2.status === 'playing' && game.ws1.status === 'playing'){
            game.status = 'playing';
        }
        updateGame(game,gamesList);
-        console.log("se actualizo el id del socket de "+oldId+" a "+socket.id);
        if (game.status === 'playing'){
            var random = Math.floor(Math.random() * 1);
            if (random === 1){
@@ -258,10 +263,14 @@ io.on('connection', function(socket){
         var response = {"isOccupied" : isOccupied, "x": json.x, "y": json.y, "ship": ship};
         socket.emit('getMyShot', response);
         socket.to(otherSocket.id).emit('getOpponentShot', response);
-        socket.to(otherSocket.id).emit('updateTurn', true);
+
         if(gameOver) {
-            socket.emit('gameOver', {"win": gameOver});
+            var gameIndex = gamesList.indexOf(thisGame);
+            gamesList = gamesList.splice(gameIndex,1);
+            socket.emit('gameOver', {"result": gameOver, "disconnected" : false});
             socket.to(otherSocket.id).emit('gameOver', {"win" : !gameOver});
+        }else{
+            socket.to(otherSocket.id).emit('updateTurn', true);
         }
     });
 });

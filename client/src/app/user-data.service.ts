@@ -9,8 +9,17 @@ export class UserDataService {
   private user = new BehaviorSubject('');
   private opponentData: BehaviorSubject<any> = new BehaviorSubject([]);
   private board: BehaviorSubject<any> = new BehaviorSubject([]);
+  private socket;
 
   constructor() { }
+
+  getSocket(){
+    return this.socket;
+  }
+
+  setSocket(socket) {
+    this.socket = socket;
+  }
 
   getUser(){
     return this.user;

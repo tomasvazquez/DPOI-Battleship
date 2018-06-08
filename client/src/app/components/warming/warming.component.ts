@@ -46,6 +46,7 @@ export class WarmingComponent implements OnInit {
     this.socket = io('http://localhost:3000',options);
     this.socket.emit('message', this.user);
     this.socket.emit('getStatus', this.user);
+    this.userData.setSocket(this.socket);
     this.getStatus();
   }
 
@@ -79,11 +80,13 @@ export class WarmingComponent implements OnInit {
         that.router.navigate(['game']);
       }
     });
-    this.socket.on('opponentDisconnect', function (msg) {
-      M.toast({html: msg + " left the game"});
+    this.socket.on('opponentDisconnect', function () {
+      const toastText = that.opponent.name + ' left the game';
+      M.toast({html: toastText});
       that.opponent = undefined;
       that.opponentReady = false;
       that.isGameSet = false;
+      that.isButtonClicked = false;
     });
   }
 
