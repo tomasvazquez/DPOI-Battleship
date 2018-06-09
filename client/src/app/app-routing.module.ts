@@ -5,6 +5,7 @@ import {HomeComponent} from './components/home/home.component';
 import {LoginComponent} from './components/login/login.component';
 import {WarmingComponent} from "./components/warming/warming.component";
 import {GameComponent} from "./components/game/game.component";
+import {AuthGuard} from './auth-guard.service';
 
 const appRoutes: Routes = [
   {
@@ -12,13 +13,16 @@ const appRoutes: Routes = [
     component: LoginComponent
   },
   { path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthGuard]
   },
   { path: 'warming',
-    component: WarmingComponent
+    component: WarmingComponent,
+    canActivate: [AuthGuard]
   },
   { path: 'game',
-    component: GameComponent
+    component: GameComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

@@ -1,6 +1,17 @@
 <div id="game-container">
-  <a id="back-button" class="btn-floating btn-large waves-effect waves-light amber accent-4" href="#">
+  <div id="result-row-container" class="row hide">
+    <div class="card">
+      {{result ? "You win! You destroyed all your enemy's ships!" : "You lose! Play again and improve your skills!"}}
+      <a id="go-home-button" class="btn" (click)="goToHome()">
+        <i class="material-icons">home</i>
+        <span>Go to home</span>
+      </a>
+    </div>
+  </div>
+
+  <a id="back-button" class="btn" (click)="goToHome()">
     <i class="material-icons">arrow_back</i>
+    <span>Go to home</span>
   </a>
 
   <div id="turns-row-container" class="row">

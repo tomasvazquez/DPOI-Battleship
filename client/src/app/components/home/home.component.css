@@ -22,8 +22,16 @@
 }
 
 #back-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   margin-top: 15px;
-  margin-left: 15px;
+  right: 15px;
+  position: absolute;
+}
+
+#back-button > i{
+  margin-right: 10px;
 }
 
 #launch-image {

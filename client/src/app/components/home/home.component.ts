@@ -33,6 +33,8 @@ export class HomeComponent implements OnInit {
   }
 
   getSocket() {
+    this.userData.setLastState('home');
+    this.userData.setState('warming');
     this.router.navigate(['warming']);
   }
 
@@ -42,7 +44,18 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.userData.setLastState('home');
+    this.userData.setState('home');
     this.getProfile();
+  }
+
+  logout(){
+    this.userData.setUser(undefined);
+    this.userData.setLastState(undefined);
+    this.userData.setState(undefined);
+    this.fb.logout().then((res: any) => {
+      this.router.navigate(['']);
+    }).catch();
   }
 }
 

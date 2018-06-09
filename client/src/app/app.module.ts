@@ -9,6 +9,7 @@ import {LoginComponent} from './components/login/login.component';
 import {WarmingComponent} from './components/warming/warming.component';
 import {DndModule} from "ngx-drag-drop";
 import { GameComponent } from './components/game/game.component';
+import {AuthGuard} from "./auth-guard.service";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,9 @@ import { GameComponent } from './components/game/game.component';
     FacebookModule.forRoot(),
     DndModule
   ],
-  providers: [],
+  providers: [
+    AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

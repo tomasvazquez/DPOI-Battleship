@@ -4,9 +4,7 @@ import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
 import {WarmingComponent} from "../warming/warming.component";
 import {Ship} from '../../models/ship';
-import * as M from 'materialize-css';
-import {Router} from '@angular/router';
-
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-game',
@@ -22,10 +20,20 @@ export class GameComponent implements OnInit {
   user;
   opponent;
   myTurn = false;
+  result = undefined;
 
   constructor(private userData: UserDataService, private router: Router) { }
 
+  goToHome() {
+    this.socket.disconnect();
+    this.userData.setLastState('playing');
+    this.userData.setState('home');
+    this.router.navigate(['home']);
+  }
+
   ngOnInit() {
+    this.userData.setLastState('playing');
+    this.userData.setState('playing');
     this.createBoard();
     this.getData();
     this.socket.emit('updateSocket', {"user": this.user, "playId": this.opponent.playId});
@@ -66,7 +74,8 @@ export class GameComponent implements OnInit {
     });
     this.socket.on('gameOver', function (json) {
       setTimeout('', 5000);
-      alert("You win: "+json.win);
+      that.result = json.win;
+      document.getElementById('result-row-container').className = 'row';
     });
   }
 

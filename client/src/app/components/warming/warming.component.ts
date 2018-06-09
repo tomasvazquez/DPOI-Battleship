@@ -40,7 +40,16 @@ export class WarmingComponent implements OnInit {
 
   constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
+  goToHome() {
+    this.socket.disconnect();
+    this.userData.setLastState('warming');
+    this.userData.setState('home');
+    this.router.navigate(['home']);
+  }
+
   ngOnInit() {
+    this.userData.setLastState('warming');
+    this.userData.setState('warming');
     this.initWarming();
     var options = {"transports":["polling"]};
     this.socket = io('http://localhost:3000',options);
@@ -51,7 +60,7 @@ export class WarmingComponent implements OnInit {
   }
 
   initWarming(){
-    this.shipColors = ['pink', 'orange', 'yellow', 'green', 'blue', 'purple', 'black'];
+    this.shipColors = ['pink', 'orange', 'yellow', 'green', 'blue', 'purple', 'brown'];
     this.createBoard();
     this.createShips(2, 3, 2);
     this.isGameSet = false;
@@ -77,6 +86,8 @@ export class WarmingComponent implements OnInit {
       that.isGameSet = that.checkReadyness();
       if (that.isGameSet && that.opponentReady && that.isButtonClicked){
         that.userData.setBoard(that.board);
+        that.userData.setLastState('warming');
+        that.userData.setState('playing');
         that.router.navigate(['game']);
       }
     });
@@ -118,8 +129,9 @@ export class WarmingComponent implements OnInit {
 
     if (this.isGameSet && this.opponentReady){
       this.userData.setBoard(this.board);
+      this.userData.setLastState('warming');
+      this.userData.setState('playing');
       this.router.navigate(['game']);
-
     }
   }
 

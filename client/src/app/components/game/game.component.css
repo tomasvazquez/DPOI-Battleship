@@ -4,6 +4,28 @@
   background-size: cover;
 }
 
+#result-row-container > .card {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: white;
+  font-size: 25px;
+  background-color: #2d2d2d;
+  height: 80px;
+  border-radius: 0;
+  margin: 0;
+}
+
+#go-home-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+#go-home-button > i{
+  margin-right: 10px;
+}
+
 #user-info-container {
   width: 520px;
   display: flex;
@@ -35,9 +57,16 @@
 }
 
 #back-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   margin-top: 15px;
   margin-left: 15px;
   position: absolute;
+}
+
+#back-button > i{
+  margin-right: 10px;
 }
 
 #turns-row-container {
@@ -135,8 +164,8 @@ section {
   pointer-events: none;
 }
 
-.black-ship {
-  background-color: black;
+.brown-ship {
+  background-color: brown;
 }
 
 .purple-ship {
@@ -172,7 +201,7 @@ section {
 }
 
 .sunk {
-  background-color: #818181;
+  background-color: black;
 }
 
 #auto-fire-button > span {
