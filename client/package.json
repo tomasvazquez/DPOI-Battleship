@@ -22,6 +22,7 @@
     "@angular/router": "^6.0.0",
     "angular2-materialize": "^15.1.10",
     "core-js": "^2.5.4",
+    "materialize-css": "^0.100.2",
     "ng2-dnd": "^5.0.2",
     "ng2-dragula": "^1.5.0",
     "ngx-drag-drop": "^1.0.3",
