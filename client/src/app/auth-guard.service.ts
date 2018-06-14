@@ -19,11 +19,12 @@ export class AuthGuard implements CanActivate {
 
     if (state !== "undefined") {
       if (state === 'warming' && futureState === 'goHome') return true;
-      else if (state === 'home' && futureState === 'warming') return true;
       else if (state === 'warming' && futureState === 'playing') return true;
-      else if (state === 'game' && futureState === 'goHome') return true;
-      else if (state === 'home' && futureState === 'home') return true;
       else if (state === 'warming' && futureState === 'warming') return true;
+      else if (state === 'home' && futureState === 'warming') return true;
+      else if (state === 'home' && futureState === 'home') return true;
+      else if (state === 'game' && futureState === 'goHome') return true;
+      else if (state === 'game' && futureState === 'goWarming') return true;
       else if (state === 'game' && futureState === 'game') return true;
       else return false
     } else {

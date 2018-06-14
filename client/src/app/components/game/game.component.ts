@@ -30,6 +30,12 @@ export class GameComponent implements OnInit {
     this.router.navigate(['home']);
   }
 
+  playAgain(){
+    this.socket.disconnect();
+    window.localStorage.setItem("futureState", "goWarming");
+    this.router.navigate(['warming']);
+  }
+
   ngOnInit() {
     window.localStorage.setItem("state","game");
     window.localStorage.setItem("futureState",undefined);
