@@ -42,14 +42,13 @@ export class WarmingComponent implements OnInit {
 
   goToHome() {
     this.socket.disconnect();
-    this.userData.setLastState('warming');
-    this.userData.setState('home');
+    window.localStorage.setItem("futureState","goHome");
     this.router.navigate(['home']);
   }
 
   ngOnInit() {
-    this.userData.setLastState('warming');
-    this.userData.setState('warming');
+    window.localStorage.setItem("state","warming");
+    window.localStorage.setItem("futureState",undefined);
     this.initWarming();
     var options = {"transports":["polling"]};
     this.socket = io('http://localhost:3000',options);
@@ -86,8 +85,7 @@ export class WarmingComponent implements OnInit {
       that.isGameSet = that.checkReadyness();
       if (that.isGameSet && that.opponentReady && that.isButtonClicked){
         that.userData.setBoard(that.board);
-        that.userData.setLastState('warming');
-        that.userData.setState('playing');
+        window.localStorage.setItem("futureState","playing");
         that.router.navigate(['game']);
       }
     });
@@ -129,8 +127,7 @@ export class WarmingComponent implements OnInit {
 
     if (this.isGameSet && this.opponentReady){
       this.userData.setBoard(this.board);
-      this.userData.setLastState('warming');
-      this.userData.setState('playing');
+      window.localStorage.setItem("futureState","playing");
       this.router.navigate(['game']);
     }
   }

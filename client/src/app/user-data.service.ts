@@ -11,7 +11,6 @@ export class UserDataService {
   private board: BehaviorSubject<any> = new BehaviorSubject([]);
   private socket;
   private state = undefined;
-  private lastState = undefined;
 
   constructor() { }
 
@@ -53,13 +52,5 @@ export class UserDataService {
 
   setState(json) {
     this.state = json;
-  }
-
-  getLastState(){
-    return this.lastState;
-  }
-
-  setLastState(json) {
-    this.lastState = json;
   }
 }

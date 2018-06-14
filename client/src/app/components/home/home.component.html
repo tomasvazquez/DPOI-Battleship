@@ -10,7 +10,7 @@
           <img (load)="onLoadedPicture()" [src]="profilePictureUrl"/>
         </div>
         <div class="card-content">
-          <span class="card-title">{{currentUser ? currentUser.name : ''}}</span>
+          <span class="card-title">{{userName ? userName : ''}}</span>
           <a (click)="getSocket()">
             <img id="launch-image" src="../../../assets/images/home/launch-button-03.png">
           </a>

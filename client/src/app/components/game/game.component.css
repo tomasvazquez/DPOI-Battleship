@@ -16,13 +16,13 @@
   margin: 0;
 }
 
-#go-home-button {
+#go-home-button, #play-again-button {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
 
-#go-home-button > i{
+#go-home-button, #play-again-button > i{
   margin-right: 10px;
 }
 

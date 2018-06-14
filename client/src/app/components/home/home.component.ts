@@ -33,8 +33,6 @@ export class HomeComponent implements OnInit {
   }
 
   getSocket() {
-    this.userData.setLastState('home');
-    this.userData.setState('warming');
     this.router.navigate(['warming']);
   }
 
@@ -44,18 +42,20 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userData.setLastState('home');
-    this.userData.setState('home');
-    this.getProfile();
+    window.localStorage.setItem("state", "home");
+    window.localStorage.setItem("futureState", undefined);
+    this.userName = window.localStorage.getItem("userName");
+    this.profilePictureUrl = window.localStorage.getItem("userPic");
+    //this.getProfile();
   }
 
   logout(){
-    this.userData.setUser(undefined);
-    this.userData.setLastState(undefined);
-    this.userData.setState(undefined);
+    window.localStorage.setItem("state", undefined);
+    window.localStorage.setItem("userName", undefined);
+    window.localStorage.setItem("userPic", undefined);
     this.fb.logout().then((res: any) => {
-      this.router.navigate(['']);
     }).catch();
+    this.router.navigate(['']);
   }
 }
 

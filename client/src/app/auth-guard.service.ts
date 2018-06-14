@@ -7,14 +7,25 @@ export class AuthGuard implements CanActivate {
   constructor(private userData: UserDataService) {}
 
   canActivate(): boolean {
-    let state = this.userData.getState();
-    let lastState = this.userData.getLastState();
-    if (state) {
-      if (state === 'home' && lastState === 'login') return true;
-      else if (state === 'warming' && lastState === 'home') return true;
-      else if (state === 'home' && lastState === 'warming') return true;
-      else if (state === 'playing' && lastState === 'warming') return true;
-      else if (state === 'home' && lastState === 'playing') return true;
+    // let state = this.userData.getState();
+    // let lastState = this.userData.getLastState();
+    let state = window.localStorage.getItem("state");
+    let url = window.location.href;
+    let futureState = window.localStorage.getItem("futureState");
+    if (futureState === "undefined") {
+      futureState = url.split('/')[url.split('/').length - 1];
+    }
+
+
+    if (state !== "undefined") {
+      if (state === 'warming' && futureState === 'goHome') return true;
+      else if (state === 'warming' && futureState === 'playing') return true;
+      else if (state === 'warming' && futureState === 'warming') return true;
+      else if (state === 'home' && futureState === 'warming') return true;
+      else if (state === 'home' && futureState === 'home') return true;
+      else if (state === 'game' && futureState === 'goHome') return true;
+      else if (state === 'game' && futureState === 'goWarming') return true;
+      else if (state === 'game' && futureState === 'game') return true;
       else return false
     } else {
       return this.isAllowedAccess();
@@ -22,12 +33,11 @@ export class AuthGuard implements CanActivate {
   }
 
   isAllowedAccess(): boolean {
-    return this.getUserName() !== undefined;
+    return this.getUserName() !== "undefined";
   }
 
   getUserName() {
-    let userName = undefined;
-    this.userData.getUser().subscribe(json => userName = json);
-    return userName.name;
+    let userName = window.localStorage.getItem("userName");
+    return userName;
   }
 }
