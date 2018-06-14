@@ -26,14 +26,13 @@ export class GameComponent implements OnInit {
 
   goToHome() {
     this.socket.disconnect();
-    this.userData.setLastState('playing');
-    this.userData.setState('home');
+    window.localStorage.setItem("futureState", "goHome");
     this.router.navigate(['home']);
   }
 
   ngOnInit() {
-    this.userData.setLastState('playing');
-    this.userData.setState('playing');
+    window.localStorage.setItem("state","game");
+    window.localStorage.setItem("futureState",undefined);
     this.createBoard();
     this.getData();
     this.socket.emit('updateSocket', {"user": this.user, "playId": this.opponent.playId});
@@ -74,7 +73,7 @@ export class GameComponent implements OnInit {
     });
     this.socket.on('gameOver', function (json) {
       setTimeout('', 5000);
-      that.result = json.win;
+      that.result = json.result;
       document.getElementById('result-row-container').className = 'row';
     });
   }

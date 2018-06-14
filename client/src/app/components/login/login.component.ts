@@ -21,8 +21,9 @@ export class LoginComponent implements OnInit {
           that.fb.api('/me')
             .then((res: any) => {
               that.userData.setUser({"name": res.name, "picUrl": 'https://graph.facebook.com/' + res.id + '/picture?type=large'});
-              that.userData.setLastState('login');
-              that.userData.setState('home');
+              window.localStorage.setItem("userName", res.name);
+              window.localStorage.setItem("userPic", "https://graph.facebook.com/" + res.id + "/picture?type=large");
+              window.localStorage.setItem("state", undefined);
               that.router.navigate(['home']);
             })
             .catch();
@@ -31,6 +32,10 @@ export class LoginComponent implements OnInit {
       .catch((error: any) => console.error(error));
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    window.localStorage.setItem("state", undefined);
+    window.localStorage.setItem("futureState", undefined);
+    window.localStorage.setItem("userName", undefined);
+  }
 
 }
