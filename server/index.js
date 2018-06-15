@@ -1,8 +1,12 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var express = require('express')();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 var mySocket = require('./MySocket.js');
 var game = require('./Game.js');
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
 
 var socketConnections = 0;
 var gamesList = [];
@@ -115,9 +119,10 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
-http.listen(3000, function(){
-    console.log('listening on *:3000');
-});
+// http.listen(3000, function(){
+//     console.log('listening on *:3000');
+// });
+server.listen(3000);
 
 io.on('connection', function(socket){
     socket.on('message', function(json){
