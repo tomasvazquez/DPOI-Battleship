@@ -51,7 +51,8 @@ export class WarmingComponent implements OnInit {
     window.localStorage.setItem("futureState",undefined);
     this.initWarming();
     var options = {"transports":["polling"]};
-    this.socket = io('https://stark-oasis-79231.herokuapp.com',options);
+   // this.socket = io('https://stark-oasis-79231.herokuapp.com',options);
+   this.socket = io('http://localhost:3000',options);
     this.socket.emit('message', this.user);
     this.socket.emit('getStatus', this.user);
     this.userData.setSocket(this.socket);
@@ -91,7 +92,7 @@ export class WarmingComponent implements OnInit {
     });
     this.socket.on('opponentDisconnect', function () {
       const toastText = that.opponent.name + ' left the game';
-      M.toast({html: toastText});
+      if (toastText !== undefined) M.toast(toastText,4200);
       that.opponent = undefined;
       that.opponentReady = false;
       that.isGameSet = false;

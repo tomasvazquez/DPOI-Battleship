@@ -143,13 +143,14 @@ io.on('connection', function(socket){
                 gamesList = gamesList.splice(gameIndex,1);
                 otherSocket.status = 'waiting';
                 waitingWebSocket = otherSocket;
-                console.log(waitingWebSocket);
+                console.log(waitingWebSocket.user.name);
                 socket.to(otherSocket.id).emit('opponentDisconnect');
             }
 
         }else if (waitingWebSocket.id == socket.id) {
             console.log("I was waitingWebSocket");
-            waitingWebSocket == null;
+            waitingWebSocket = null;
+            console.log(waitingWebSocket);
         }else{
             playId++;
             var game = findGameBySocket(gamesList,socket.id);
