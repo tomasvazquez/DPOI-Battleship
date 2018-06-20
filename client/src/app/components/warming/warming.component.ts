@@ -49,9 +49,7 @@ export class WarmingComponent implements OnInit {
     window.localStorage.setItem("state","warming");
     window.localStorage.setItem("futureState",undefined);
     this.initWarming();
-    var options = {"transports":["polling"]};
-   // this.socket = io('https://stark-oasis-79231.herokuapp.com',options);
-   this.socket = io('http://localhost:3000',options);
+    this.socket = io('https://powerful-dawn-70439.herokuapp.com');
     this.socket.emit('message', this.user);
     this.socket.emit('getStatus', this.user);
     this.userData.setSocket(this.socket);
