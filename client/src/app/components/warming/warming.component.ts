@@ -7,7 +7,6 @@ import {FacebookService} from "ngx-facebook";
 import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
 import * as M from 'materialize-css';
-
 @Component({
   selector: 'app-warming',
   templateUrl: './warming.component.html',

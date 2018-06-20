@@ -22,7 +22,7 @@
   justify-content: space-evenly;
 }
 
-#go-home-button, #play-again-button > i{
+#go-home-button > i, #play-again-button > i{
   margin-right: 10px;
 }
 

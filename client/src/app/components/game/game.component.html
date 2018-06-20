@@ -1,10 +1,10 @@
 <div id="game-container">
   <div id="result-row-container" class="row hide">
     <div class="card">
-      {{result ? "You win! You destroyed all your enemy's ships!" : "You lose! Play again and improve your skills!"}}
+      {{result ? "You win! The victory is yours!" : "You lose! Play again and improve your skills!"}}
       <a id="go-home-button" class="btn" (click)="goToHome()">
         <i class="material-icons">home</i>
-        <span>Go to home</span>
+        <span>Go home</span>
       </a>
       <a id="play-again-button" class="btn" (click)="playAgain()">
         <i class="material-icons">play_circle_filled</i>
@@ -15,7 +15,7 @@
 
   <a id="back-button" class="btn" (click)="goToHome()">
     <i class="material-icons">arrow_back</i>
-    <span>Go to home</span>
+    <span>Go home</span>
   </a>
 
   <div id="turns-row-container" class="row">

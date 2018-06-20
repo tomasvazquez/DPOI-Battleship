@@ -126,6 +126,7 @@ server.listen(3000);
 
 io.on('connection', function(socket){
     socket.on('message', function(json){
+        console.log('trying to connect: '+socket.id);
         if(waitingWebSocket == null ){
            waitingWebSocket = new mySocket.MySocket(socket.id,json);
         }
@@ -134,8 +135,9 @@ io.on('connection', function(socket){
     });
     socket.on('disconnect', function(){
         console.log('disconnect '+socket.id);
+        console.log(waitingWebSocket);
         socketConnections--;
-        if(waitingWebSocket == null) {
+        if(waitingWebSocket === null) {
             var game = findGameBySocket(gamesList,socket.id);
             var ws = findSocketById(game, socket.id);
             var otherSocket = findOtherSocket(game,socket.id);
@@ -149,14 +151,17 @@ io.on('connection', function(socket){
                 otherSocket.status = 'waiting';
                 waitingWebSocket = otherSocket;
                 console.log(waitingWebSocket.user.name);
-                socket.to(otherSocket.id).emit('opponentDisconnect');
+                console.log('otherS id: '+otherSocket.id+' waitingS: '+waitingWebSocket.id);
+                socket.to(waitingWebSocket.id).emit('opponentDisconnect');
+                console.log('socket send disconnect');
             }
 
-        }else if (waitingWebSocket.id == socket.id) {
+        }else if (waitingWebSocket.id === socket.id) {
             console.log("I was waitingWebSocket");
             waitingWebSocket = null;
             console.log(waitingWebSocket);
         }else{
+            console.log('enter else');
             playId++;
             var game = findGameBySocket(gamesList,socket.id);
             var ws = findSocketById(game, socket.id);
@@ -276,7 +281,7 @@ io.on('connection', function(socket){
             var gameIndex = gamesList.indexOf(thisGame);
             gamesList = gamesList.splice(gameIndex,1);
             socket.emit('gameOver', {"result": gameOver, "disconnected" : false});
-            socket.to(otherSocket.id).emit('gameOver', {"win" : !gameOver});
+            socket.to(otherSocket.id).emit('gameOver', {"result" : !gameOver, "disconnected" : false});
         }else{
             socket.to(otherSocket.id).emit('updateTurn', true);
         }

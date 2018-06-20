@@ -81,6 +81,7 @@ export class GameComponent implements OnInit {
       setTimeout('', 5000);
       that.result = json.result;
       document.getElementById('result-row-container').className = 'row';
+      document.getElementById('back-button').className = 'btn hide';
     });
   }
 
