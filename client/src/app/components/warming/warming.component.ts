@@ -117,9 +117,9 @@ export class WarmingComponent implements OnInit {
   playGame() {
     this.isButtonClicked = true;
     this.isGameSet = this.checkReadyness();
-    document.getElementById('play-button').className = 'waves-effect waves-light btn-large disabled';
-    document.getElementById('reset-board-button').className = 'waves-effect waves-light btn disabled';
-    document.getElementById('random-board-button').className = 'waves-effect waves-light btn disabled';
+    document.getElementById('play-button').className = 'waves-light btn-large disabled';
+    document.getElementById('reset-board-button').className = 'waves-light btn disabled';
+    document.getElementById('random-board-button').className = 'waves-light btn disabled';
     var simpleBoard = this.transformBoard();
     this.socket.emit('setReady', {"user": this.user, "playId": this.opponent.playId, "board": simpleBoard});
 
