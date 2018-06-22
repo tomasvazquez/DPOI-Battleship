@@ -78,6 +78,7 @@ export class GameComponent implements OnInit {
       }
     });
     this.socket.on('gameOver', function (json) {
+      that.myTurn = false;
       setTimeout('', 5000);
       that.result = json.result;
       document.getElementById('result-row-container').className = 'row';
