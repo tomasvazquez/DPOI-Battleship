@@ -148,7 +148,7 @@ export class GameComponent implements OnInit {
       }
     } else {
       if (this.userBoard[y][x].ship) {
-        return this.userBoard[y][x].align === 'vertical' ?  this.userBoard[y][x].shipType + ' cell ' + this.userBoard[y][x].align : this.userBoard[y][x].shipType + ' cell';
+        return this.userBoard[y][x].align === 'vertical' ?  this.userBoard[y][x].shipType + ' cell vertical-cell' : this.userBoard[y][x].shipType + ' cell';
       } else {
         return 'cell';
       }

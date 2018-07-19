@@ -61,6 +61,7 @@ export class HomeComponent implements OnInit {
   getStats() {
     const that = this;
     this.socket.on('stats', function (json) {
+      console.log(json);
       that.stats = json;
     });
   }
