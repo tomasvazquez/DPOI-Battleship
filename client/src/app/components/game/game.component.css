@@ -207,3 +207,19 @@ section {
 #auto-fire-button > span {
   margin-left: 10px;
 }
+
+.init-ship {
+  background-image: url('../../../assets/images/warming/init-ship.png');
+}
+
+.middle-ship {
+  background-image: url('../../../assets/images/warming/middle-ship.png');
+}
+
+.end-ship {
+  background-image: url('../../../assets/images/warming/end-ship.png');
+}
+
+.vertical-cell {
+  transform: rotate(90deg);
+}

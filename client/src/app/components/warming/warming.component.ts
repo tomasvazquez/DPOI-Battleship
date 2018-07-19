@@ -7,6 +7,8 @@ import {FacebookService} from "ngx-facebook";
 import {UserDataService} from "../../user-data.service";
 import * as io from 'socket.io-client';
 import * as M from 'materialize-css';
+import * as url from "url";
+
 @Component({
   selector: 'app-warming',
   templateUrl: './warming.component.html',
@@ -35,7 +37,6 @@ export class WarmingComponent implements OnInit {
   isVertical = false;
   draggingShip = undefined;
   shipsPlaced = 0;
-  shipColors = [];
 
   constructor(private fb: FacebookService, private router: Router, private userData: UserDataService) {}
 
@@ -57,7 +58,6 @@ export class WarmingComponent implements OnInit {
   }
 
   initWarming(){
-    this.shipColors = ['pink', 'orange', 'yellow', 'green', 'blue', 'purple', 'brown'];
     this.createBoard();
     this.createShips(2, 3, 2);
     this.isGameSet = false;
@@ -149,13 +149,13 @@ export class WarmingComponent implements OnInit {
 
   createShips(sized2, sized3, sized4) {
     for (let i = 0; i < sized2; i++) {
-      this.ships.push(new Ship(i, 2, this.shipColors.pop()));
+      this.ships.push(new Ship(i, 2));
     }
     for (let j = 0; j < sized3; j++) {
-      this.ships.push(new Ship(j, 3, this.shipColors.pop()));
+      this.ships.push(new Ship(j, 3));
     }
     for (let k = 0; k < sized4; k++) {
-      this.ships.push(new Ship(k, 4, this.shipColors.pop()));
+      this.ships.push(new Ship(k, 4));
     }
   }
 
@@ -307,7 +307,10 @@ export class WarmingComponent implements OnInit {
       this.board[y + i][x].isOccupied = true;
       this.board[y + i][x].ship = ship;
       ship.cells.push(this.board[y + i][x]);
-      document.getElementById(`${x},${y+i}`).style.backgroundColor = ship.color;
+      if (i === 0) this.board[y + i][x].shipType = 'init-ship';
+      else if (i === ship.size - 1) this.board[y + i][x].shipType = 'end-ship';
+      else this.board[y + i][x].shipType = 'middle-ship';
+      this.board[y + i][x].align = 'vertical';
     }
     ship.disabled = true;
     this.shipsPlaced++;
@@ -318,7 +321,9 @@ export class WarmingComponent implements OnInit {
       this.board[y][x + i].isOccupied = true;
       this.board[y][x + i].ship = ship;
       ship.cells.push(this.board[y][x + i]);
-      document.getElementById(`${x+i},${y}`).style.backgroundColor = ship.color;
+      if (i === 0) this.board[y][x + i].shipType = 'init-ship';
+      else if (i === ship.size - 1) this.board[y][x + i].shipType = 'end-ship';
+      else this.board[y][x + i].shipType = 'middle-ship';
     }
     ship.disabled = true;
     this.shipsPlaced++;
@@ -330,5 +335,9 @@ export class WarmingComponent implements OnInit {
 
   isBoardCompleted() {
     return this.shipsPlaced === this.ships.length;
+  }
+
+  getCellClassName(cell: Cell) {
+    return cell.align === 'vertical' ?  `cell ${cell.shipType} ${cell.align}-cell` : `cell ${cell.shipType}`;
   }
 }

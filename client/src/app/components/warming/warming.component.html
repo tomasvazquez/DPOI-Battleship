@@ -22,7 +22,7 @@
                (dndMoved)="onDraggableMoved($event)"
                (dndCanceled)="onDragCanceled($event)"
                (dndEnd)="onDragEnd($event)">
-            {{ship.color.toUpperCase()}} SHIP ({{ship.size}} blocks)
+            SHIP ({{ship.size}} blocks)
           </div>
         </div>
         <a id="reset-board-button" [class]="shipsPlaced === 0 ? 'waves-light btn disabled' : 'waves-light btn'" (click)="resetBoard()">
@@ -46,7 +46,7 @@
               <div *ngIf="x == '-'" class="cell-id">
                 {{y}}
               </div>
-              <div id="{{x}},{{y}}" *ngIf="x !== '-'" class="cell"
+              <div id="{{x}},{{y}}" *ngIf="x !== '-'" [class]="getCellClassName(board[y][x])"
                    dndDropzone
                    (dndDragover)="onDragover($event)"
                    (dndDrop)="onDrop($event)"

@@ -6,6 +6,8 @@ export class Cell {
   isOccupied: boolean;
   isFired: boolean;
   ship: Ship;
+  shipType: string;
+  align: string;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -13,5 +15,7 @@ export class Cell {
     this.isOccupied = false;
     this.isFired = false;
     this.ship = undefined;
+    this.shipType = undefined;
+    this.align = undefined;
   }
 }

@@ -68,7 +68,7 @@ export class GameComponent implements OnInit {
       that.opponentBoard[json.y][json.x].isOccupied = json.isOccupied;
       if (json.ship !== undefined){
         const cells = [];
-        const ship = new Ship(json.ship.id, json.ship.size, undefined);
+        const ship = new Ship(json.ship.id, json.ship.size);
         for (let i = 0; i < json.ship.cells.length; i++) {
           let y = json.ship.cells[i][0];
           let x = json.ship.cells[i][1];
@@ -148,7 +148,7 @@ export class GameComponent implements OnInit {
       }
     } else {
       if (this.userBoard[y][x].ship) {
-        return this.userBoard[y][x].ship.color + '-ship cell';
+        return this.userBoard[y][x].align === 'vertical' ?  this.userBoard[y][x].shipType + ' cell ' + this.userBoard[y][x].align : this.userBoard[y][x].shipType + ' cell';
       } else {
         return 'cell';
       }

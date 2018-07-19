@@ -49,6 +49,7 @@ section {
   border: black solid 1px;
   width: 40px;
   height: 40px;
+  background-size: 100% 100%;
 }
 
 .cell-id {
@@ -118,4 +119,20 @@ section {
 
 .card.medium > div.collection {
   margin-top: 20px;
+}
+
+.init-ship {
+  background-image: url('../../../assets/images/warming/init-ship.png');
+}
+
+.middle-ship {
+  background-image: url('../../../assets/images/warming/middle-ship.png');
+}
+
+.end-ship {
+  background-image: url('../../../assets/images/warming/end-ship.png');
+}
+
+.vertical-cell {
+  transform: rotate(90deg);
 }
