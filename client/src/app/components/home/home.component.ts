@@ -47,6 +47,7 @@ export class HomeComponent implements OnInit {
     this.userName = window.localStorage.getItem("userName");
     this.profilePictureUrl = window.localStorage.getItem("userPic");
     this.socket.emit('getStats', this.userName);
+    this.getStats();
   }
 
   logout(){
